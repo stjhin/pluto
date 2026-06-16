@@ -1,0 +1,9 @@
+id,address,addressDetail,drone,status,eta,etaDetail,type
+#DLV-8829,742 Skyview Terrace,Sector 7 Upper City,DR-X1-44,IN TRANSIT,14:20,On Time,transit
+#DLV-8756,St. Jude Medical Complex,Roof Deck A Dock 12,DR-X2-11,DELAYED,13:10,+12m Offset,delayed
+#DLV-8901,12 Industrial Way,Dock 4 Warehouse Alpha,DR-V2-09,SCHEDULED,15:45,Standby,scheduled
+#DLV-8844,33 Central Plaza,Level 15 Suite 400,DR-H4-99,FINAL APPROACH,14:05,1.2km away,approach
+#DLV-8835,102 Technopark Dr,Gate C Assembly Hub,DR-Z9-02,IN TRANSIT,16:00,On Time,transit
+#DLV-8812,45 Market Street,Main Entrance East,DR-V3-11,DELAYED,17:15,+25m Offset,delayed
+#DLV-8799,Skyline Towers,Penthouse B West,DR-A8-65,SCHEDULED,18:30,Standby,scheduled
+#DLV-8760,Green Crossing Plaza,Dock 3 Rear,DR-M1-44,FINAL APPROACH,14:55,0.4km away,approach
