@@ -21,5 +21,10 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.3"
-  }
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
 }
