@@ -1,1 +1,1188 @@
-c
+import Layout from '../layouts/Layout.astro';
+import { 
+  Rocket, 
+  Package, 
+  TrendingUp, 
+  Settings, 
+  Search, 
+  HelpCircle, 
+  Sparkles, 
+  ArrowUpRight, 
+  CheckCircle2, 
+  X,
+  MapPin,
+  ChevronDown,
+  Download,
+  Terminal as TerminalIcon,
+  Bell,
+  User,
+  Activity,
+  Plus,
+  ShieldAlert,
+  Edit2,
+  Eye,
+  Crosshair
+} from '@lucide/astro';
+import fs from 'node:fs';
+import path from 'node:path';
+import { parse } from 'csv-parse/sync';
+
+// Parse Deliveries data from .csv database file dynamically
+const csvFilePath = path.join(process.cwd(), 'src/data/deliveries.csv');
+const fileContent = fs.readFileSync(csvFilePath, 'utf-8');
+const parsedRecords = parse(fileContent, {
+  columns: true,
+  skip_empty_lines: true,
+  cast: true
+});
+
+// Map deliveries records
+const deliveries = parsedRecords.map((record: any) => ({
+  id: String(record.id),
+  address: String(record.address),
+  addressDetail: String(record.addressDetail),
+  drone: String(record.drone),
+  status: String(record.status),
+  eta: String(record.eta),
+  etaDetail: String(record.etaDetail),
+  type: String(record.type)
+}));
+
+const metrics = {
+  activeDeliveries: 42,
+  percentChange: "+12%",
+  avgDeliveryTime: "18.4m",
+  timeChange: "+0.5m",
+  successRate: "99.2%",
+  rateStatus: "Optimal"
+};
+---
+
+<Layout title="PLUTO Fleet Command | Deliveries">
+  <div class="flex h-screen overflow-hidden bg-[#0a0d16]">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-64 bg-[#0e1220] border-r border-[#192239] flex flex-col justify-between shrink-0">
+      <div>
+        <!-- Brand / Identity -->
+        <div class="p-6 border-b border-[#192239]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20">
+              P
+            </div>
+            <div>
+              <h1 class="text-xs uppercase font-extrabold tracking-widest text-blue-400">Pluto</h1>
+              <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Fleet Command</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
+          <a href="/pluto/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
+            <Rocket class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400" />
+            Drones
+          </a>
+          <a href="/deliveries" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 bg-[#171f34] border-l-2 border-blue-500 rounded-r-md transition-all">
+            <Package class="w-[18px] h-[18px] text-blue-400" />
+            Deliveries
+          </a>
+          <a href="/analytics" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
+          <a href="/pluto/analytics" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
+            <TrendingUp class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400" />
+            Analytics
+          </a>
+          <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
+            <Settings class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400" />
+            Settings
+          </a>
+        </nav>
+      </div>
+
+      <!-- User Profile (Bottom of Sidebar) -->
+      <div class="p-4 border-t border-[#192239] bg-[#0c0f1b]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-[#11182c] border border-blue-500/20 text-blue-400 flex items-center justify-center font-bold shadow-inner">
+            JB
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-xs font-semibold text-slate-200 truncate">Justin Beckenbaur</p>
+            <p class="text-[10px] text-slate-500 uppercase tracking-tight">System Admin</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN BODY SECTION & RIGHT LOGS -->
+    <div class="flex flex-1 overflow-hidden">
+
+      <!-- CENTRAL CONTENT AREA -->
+      <main class="flex-1 overflow-y-auto p-8 space-y-8 bg-[#0a0d16] border-r border-[#192239]">
+
+        <!-- Header Controls -->
+        <div class="flex justify-between items-center gap-4">
+          <!-- Navigation Title -->
+          <div class="relative w-80">
+            <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input 
+              type="text" 
+              placeholder="Search Deliveries..." 
+              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2 pl-10 pr-4 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+            />
+          </div>
+
+          <!-- Utility Icons with Badges -->
+          <div class="flex items-center gap-4 text-slate-400">
+            <button class="relative p-1.5 hover:text-slate-200 transition-colors">
+              <span class="absolute top-1 right-1 w-2 h-2 bg-[#ef4444] rounded-full"></span>
+              <Bell class="w-4 h-4" />
+            </button>
+            <button class="p-1.5 hover:text-slate-200 transition-colors">
+              <HelpCircle class="w-4 h-4" />
+            </button>
+            <button class="p-1.5 hover:text-slate-200 transition-colors border border-[#192239] rounded-full bg-[#0e1220]">
+              <User class="w-4 h-4 text-slate-300" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="grid grid-cols-3 gap-6">
+          <!-- Active Deliveries -->
+          <div class="bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 relative">
+            <div class="flex justify-between items-start mb-2">
+              <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Active Deliveries</p>
+            </div>
+            <div class="flex items-baseline gap-3">
+              <h3 class="text-3xl font-extrabold text-white tracking-tight">{metrics.activeDeliveries}</h3>
+              <span class="text-xs font-bold text-[#10b981]">{metrics.percentChange}</span>
+            </div>
+            <!-- Progress Line -->
+            <div class="mt-4 w-full h-1 bg-[#172033] rounded-full overflow-hidden">
+              <div class="h-full bg-blue-500 rounded-full" style="width: 70%"></div>
+            </div>
+          </div>
+
+          <!-- Avg Delivery Time -->
+          <div class="bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 relative">
+            <div class="flex justify-between items-start mb-2">
+              <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Avg Delivery Time</p>
+            </div>
+            <div class="flex items-baseline gap-3">
+              <h3 class="text-3xl font-extrabold text-white tracking-tight">{metrics.avgDeliveryTime}</h3>
+              <span class="text-xs font-bold text-slate-500">{metrics.timeChange}</span>
+            </div>
+            <!-- Progress Line -->
+            <div class="mt-4 w-full h-1 bg-[#172033] rounded-full overflow-hidden">
+              <div class="h-full bg-slate-400 rounded-full" style="width: 60%"></div>
+            </div>
+          </div>
+
+          <!-- Successful Today -->
+          <div class="bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 relative">
+            <div class="flex justify-between items-start mb-2">
+              <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Successful Today (%)</p>
+            </div>
+            <div class="flex items-baseline gap-3">
+              <h3 class="text-3xl font-extrabold text-white tracking-tight">{metrics.successRate}</h3>
+              <span class="text-xs font-bold text-[#10b981] uppercase tracking-wide text-[10px]">{metrics.rateStatus}</span>
+            </div>
+            <!-- Progress Line -->
+            <div class="mt-4 w-full h-1 bg-[#172033] rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-500 rounded-full" style="width: 99.2%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="flex justify-between items-center gap-4">
+          <div class="relative w-96">
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input 
+              id="delivery-search-input"
+              type="text" 
+              placeholder="Search Deliveries (ID, Recipient, Drone)..." 
+              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2 pl-9 pr-4 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+            />
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button class="flex items-center gap-2 px-3.5 py-2 bg-[#171f34] hover:bg-[#1e2947] border border-[#233155] rounded-lg text-xs font-bold text-slate-300 transition-colors">
+              Filter by Status
+              <ChevronDown class="w-3.5 h-3.5 text-slate-500" />
+            </button>
+            <button id="new-mission-trigger" class="flex items-center gap-1.5 px-4 py-2 bg-[#1d4ed8] hover:bg-blue-600 text-white font-bold text-xs rounded-lg transition-colors shadow-md shadow-blue-500/10 cursor-pointer">
+              <Plus class="w-4 h-4" />
+              New Mission
+            </button>
+          </div>
+        </div>
+
+        <!-- Deliveries Table Grid -->
+        <div class="bg-[#0e1220] border border-[#192239] rounded-xl overflow-hidden shadow-lg">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="deliveries-table">
+              <thead>
+                <tr class="border-b border-[#172036] bg-[#0c101d]/60">
+                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Delivery ID</th>
+                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Address</th>
+                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Drone</th>
+                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Status</th>
+                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">ETA</th>
+                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#151b2e]">
+                {deliveries.map((delivery, idx) => (
+                  <tr 
+                    class={`hover:bg-[#121827]/70 transition-colors group delivery-row cursor-pointer ${idx >= 4 ? 'hidden' : ''}`} 
+                    data-index={idx}
+                    data-drone={delivery.drone}
+                    data-address={delivery.address}
+                    data-id={delivery.id}
+                    data-eta={delivery.eta}
+                    data-status={delivery.status}
+                  >
+                    <td class="py-4 px-5 font-mono text-xs font-bold text-slate-200 group-hover:text-blue-400 transition-colors">
+                      {delivery.id}
+                    </td>
+                    <td class="py-4 px-5 text-xs">
+                      <p class="font-bold text-slate-200">{delivery.address}</p>
+                      <p class="text-[10px] text-slate-500 font-medium">{delivery.addressDetail}</p>
+                    </td>
+                    <td class="py-4 px-5 text-xs font-mono text-slate-300">
+                      <div class="flex items-center gap-1.5">
+                        <span class={`w-1.5 h-1.5 rounded-full ${
+                          delivery.type === 'transit' ? 'bg-blue-400' :
+                          delivery.type === 'delayed' ? 'bg-rose-400' :
+                          delivery.type === 'approach' ? 'bg-emerald-400' : 'bg-slate-400'
+                        }`}></span>
+                        {delivery.drone}
+                      </div>
+                    </td>
+                    <td class="py-4 px-5">
+                      {delivery.status === "IN TRANSIT" && (
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-blue-500/10 border border-blue-500/20 rounded-md text-[9px] font-bold text-blue-400 uppercase tracking-wider">
+                          In Transit
+                        </div>
+                      )}
+                      {delivery.status === "DELAYED" && (
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-rose-500/10 border border-rose-500/20 rounded-md text-[9px] font-bold text-rose-400 tracking-wider">
+                          Delayed
+                        </div>
+                      )}
+                      {delivery.status === "SCHEDULED" && (
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-slate-500/10 border border-slate-500/25 rounded-md text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                          Scheduled
+                        </div>
+                      )}
+                      {delivery.status === "FINAL APPROACH" && (
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[9px] font-bold text-emerald-400 uppercase tracking-wilder">
+                          Final Approach
+                        </div>
+                      )}
+                    </td>
+                    <td class="py-4 px-5 text-xs">
+                      <p class="font-mono font-bold text-slate-200">{delivery.eta}</p>
+                      <p class={`text-[10px] font-bold ${
+                        delivery.type === 'delayed' ? 'text-rose-400' :
+                        delivery.type === 'approach' ? 'text-emerald-400 text-[10px]' :
+                        delivery.type === 'transit' ? 'text-emerald-400 text-[10px]' : 'text-slate-500'
+                      }`}>{delivery.etaDetail}</p>
+                    </td>
+                    <td class="py-4 px-5 text-center">
+                      <div class="flex items-center justify-center gap-3 text-slate-500">
+                        {delivery.status === "IN TRANSIT" && (
+                          <button class="hover:text-blue-400 transition-colors cursor-pointer" title="Telemetry Real-time Metrics">
+                            <Activity class="w-4 h-4" />
+                          </button>
+                        )}
+                        {delivery.status === "DELAYED" && (
+                          <button class="hover:text-rose-400 transition-colors cursor-pointer" title="Warning Report Logs">
+                            <ShieldAlert class="w-4 h-4" />
+                          </button>
+                        )}
+                        {delivery.status === "SCHEDULED" && (
+                          <button class="hover:text-slate-200 transition-colors cursor-pointer" title="Edit Dispatch Details">
+                            <Edit2 class="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {delivery.status === "FINAL APPROACH" && (
+                          <button class="hover:text-emerald-400 transition-colors cursor-pointer" title="Live System View">
+                            <Eye class="w-4 h-4" />
+                          </button>
+                        )}
+                        <!-- Cancel Mission action button -->
+                        <button class="hover:text-rose-500 transition-colors cursor-pointer cancel-mission-btn" title="Cancel Mission" data-id={delivery.id} data-drone={delivery.drone}>
+                          <X class="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table Summary Footer -->
+          <div class="p-4 bg-[#111628] border-t border-[#192239] flex justify-between items-center text-xs text-slate-400 font-semibold">
+            <span>DISPLAYING <strong class="text-white" id="range-start">1</strong>-<strong class="text-white" id="range-end">4</strong> OF <strong class="text-white">42</strong> RECORDS</span>
+            <div class="flex gap-1 bg-[#101423] p-0.5 rounded border border-[#192239]">
+              <button id="prev-page-btn" class="px-2.5 py-1 text-slate-500 font-bold uppercase tracking-wide hover:text-white hover:bg-[#161d31] rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Prev</button>
+              <button id="page-1-btn" class="px-3 py-1 bg-[#1d4ed8] text-white font-bold rounded transition-colors">1</button>
+              <button id="page-2-btn" class="px-3 py-1 text-slate-500 font-bold hover:text-white hover:bg-[#161d31] rounded transition-colors">2</button>
+              <button id="next-page-btn" class="px-2.5 py-1 text-slate-500 font-bold uppercase tracking-wide hover:text-white hover:bg-[#161d31] rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Next</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- RIGHT SIDEBAR (Tactical Airspace Map) -->
+      <aside id="tactical-sidebar" class="w-96 bg-[#0e1220] flex flex-col shrink-0 border-l border-[#192239] hidden transition-all duration-300">
+        <!-- Tabbed Header -->
+        <div class="p-6 border-b border-[#192239] flex justify-between items-center bg-[#0d101e]">
+          <div>
+            <h3 class="text-xs font-extrabold text-white tracking-widest uppercase">Tactical Airspace</h3>
+            <p class="text-[9px] text-blue-400 font-bold font-mono mt-0.5 tracking-wider" id="active-drone-lbl">DRONE: UNKNOWN</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="flex items-center gap-1.5 text-[9px] font-bold tracking-wider text-emerald-400 uppercase">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+              Live Feed
+            </span>
+            <button id="close-sidebar-btn" class="p-1 hover:bg-[#1c2642] rounded-md text-slate-400 hover:text-white transition-all cursor-pointer">
+              <X class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 flex-1 flex flex-col justify-between overflow-y-auto space-y-6">
+
+          <!-- Tactical Vector Radar Deco Container -->
+          <div class="relative bg-[#0b0e1a] border border-[#1b253b] rounded-xl overflow-hidden shadow-inner flex flex-col justify-between aspect-[1.12/1] min-h-[300px] p-4 group">
+
+            <!-- Google Maps Embed Container -->
+            <div id="map-iframe-container" class="absolute inset-0 w-full h-full z-0 pointer-events-auto">
+              <!-- Dynamically populated iframe -->
+            </div>
+
+            <!-- Dynamic UI Overlay for high tech vibe -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0b0e1a] via-transparent to-transparent pointer-events-none z-10 h-1/2 mt-auto"></div>
+
+            <!-- Radar border highlight -->
+            <div class="absolute inset-x-0 bottom-0 top-1/2 bg-[#0b101c]/90 pointer-events-none z-10 flex flex-col justify-end p-4 border-t border-blue-500/10">
+              <!-- Radar details bubble -->
+              <div class="relative z-20 p-3 bg-[#0e1324]/95 border border-blue-500/20 rounded-lg flex justify-between items-center backdrop-blur-sm shadow-lg">
+                <div class="flex items-center gap-2">
+                  <Crosshair class="w-4 h-4 text-blue-400 animate-spin" style="animation-duration: 10s" />
+                  <div class="min-w-0">
+                    <p id="active-id-lbl" class="font-mono text-[9px] font-bold text-white uppercase tracking-wider">#DLV-0000</p>
+                    <p id="active-address-lbl" class="text-[8px] text-slate-400 font-bold uppercase truncate max-w-[140px]">Sector Loading...</p>
+                  </div>
+                </div>
+                <div class="text-right font-mono text-[8px] font-bold text-blue-400">
+                  <p id="active-eta-lbl">ETA --:--</p>
+                  <p id="active-status-lbl" class="text-emerald-400 text-[8px]">ACTIVE</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Recent Logistics Events -->
+          <div class="space-y-4 pt-4 border-t border-[#192239]">
+            <h4 class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Recent Logistics Events</h4>
+            <div class="space-y-3.5">
+
+              <!-- Event 1 -->
+              <div class="flex gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0 animate-pulse"></span>
+                <div class="text-xs">
+                  <p class="font-bold text-slate-300">#DLV-8822 Delivered Successfully</p>
+                  <p class="text-[10px] text-slate-500 font-medium">2 mins ago • Sector 3</p>
+                </div>
+              </div>
+
+              <!-- Event 2 -->
+              <div class="flex gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 shrink-0"></span>
+                <div class="text-xs">
+                  <p class="font-bold text-slate-300">Weather Alert: High Winds</p>
+                  <p class="text-[10px] text-slate-500 font-medium">10 mins ago • Sector 7-9</p>
+                </div>
+              </div>
+
+              <!-- Event 3 -->
+              <div class="flex gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0"></span>
+                <div class="text-xs">
+                  <p class="font-bold text-slate-300">DR-X1-44 Battery Normal</p>
+                  <p class="text-[10px] text-slate-500 font-medium">15 mins ago • In Transit</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Float map target control -->
+        <div class="p-6 border-t border-[#192239] bg-[#0c0f1b] flex items-center justify-end">
+          <button id="focus-location-btn" class="w-11 h-11 bg-blue-600 hover:bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-500/20 transition-all cursor-pointer">
+            <Crosshair class="w-5 h-5" />
+          </button>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+  <!-- NEW MISSION MODAL -->
+  <div id="new-mission-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0e1220] border border-[#232d4b] rounded-xl w-full max-w-lg p-6 shadow-2xl relative transition-transform duration-300 scale-95" id="new-mission-modal-content">
+
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center pb-4 border-b border-[#192239]">
+        <div>
+          <h3 class="text-sm font-extrabold text-white tracking-widest uppercase">Launch New Mission</h3>
+          <p class="text-[10px] text-slate-500 font-semibold uppercase mt-0.5 tracking-wider">Configure flight and delivery parameters</p>
+        </div>
+        <button id="close-modal-trigger" class="p-1.5 hover:bg-[#1a233b] rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer">
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+
+      <!-- Action Form -->
+      <form id="new-mission-form" class="space-y-5 pt-5">
+
+        <!-- Field 1: Select Idle Zone Dropdown -->
+        <div class="space-y-1.5">
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Idle Zone / Station</label>
+          <div class="relative">
+            <select 
+              id="mission-idle-zone" 
+              required
+              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2.5 px-3.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500/50 transition-all appearance-none cursor-pointer"
+            >
+              <option value="" disabled selected>-- Choose Station with Available Drone --</option>
+              <option value="Downtown Hub">Downtown Hub (DR-V2-10 - IDLE)</option>
+              <option value="Metro Core Plaza">Metro Core Plaza (DR-B8-82 - IDLE)</option>
+              <option value="Hillside Suburbs">Hillside Suburbs (DR-Y5-50 - IDLE)</option>
+              <option value="East Ridge High">East Ridge High (DR-L4-50 - IDLE)</option>
+              <option value="Ocean Terminal Grid">Ocean Terminal Grid (DR-T9-01 - IDLE)</option>
+              <option value="Metro Core Block B">Metro Core Block B (DR-Y1-04 - IDLE)</option>
+              <option value="Riverbank Bay">Riverbank Bay (DR-H4-30 - IDLE)</option>
+              <option value="South Gate Plaza">South Gate Plaza (DR-G2-21 - IDLE)</option>
+              <option value="Warehouse Row A">Warehouse Row A (DR-R9-80 - IDLE)</option>
+              <option value="Technology Park">Technology Park (DR-K7-77 - IDLE)</option>
+            </select>
+            <ChevronDown class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+          </div>
+        </div>
+
+        <!-- Field 2: Target Location (Typing with autocomplete & saved locations selection) -->
+        <div class="space-y-1.5 relative">
+          <div class="flex justify-between items-center">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Delivery Coordinates / Address</label>
+            <span class="text-[9px] text-blue-400 font-bold hover:underline cursor-pointer uppercase tracking-wider" id="use-saved-address-trigger">
+              Use Saved Address
+            </span>
+          </div>
+
+          <div class="relative">
+            <MapPin class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            <input 
+              id="mission-location"
+              type="text" 
+              required
+              placeholder="Start typing full address based on google maps..."
+              autocomplete="off"
+              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2.5 pl-10 pr-3.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
+            />
+          </div>
+
+          <!-- Dynamic Auto-suggestions listing -->
+          <div id="autocomplete-suggestions" class="absolute left-0 right-0 top-full mt-1.5 bg-[#0e1220] border border-[#1b253b] rounded-lg shadow-xl overflow-hidden hidden z-50">
+            <div class="p-2 border-b border-[#1b253b] bg-[#0b0e1a] text-[10px] text-slate-500 font-bold tracking-wider uppercase flex justify-between items-center">
+              <span>Google Maps Live Preview Matches</span>
+              <span class="text-blue-500">Live API active</span>
+            </div>
+            <div class="max-h-40 overflow-y-auto divide-y divide-[#151c2e]" id="suggestions-list">
+              <!-- Suggestion items will inject dynamically -->
+            </div>
+          </div>
+
+          <!-- Saved Addresses dropdown selection block -->
+          <div id="saved-addresses-selector" class="mt-2 p-3 bg-[#0a0d16] border border-[#1c2438] rounded-lg hidden">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Fast Saved Logistics Docks</span>
+              <button id="hide-saved-trigger" type="button" class="text-[9px] text-slate-500 hover:text-slate-300 font-bold">Close Drawer</button>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="St. Jude General Hospital" data-detail="Landing Platform Green D-1">
+                St. Jude Hospital
+              </button>
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Tech City Research Hub" data-detail="South Rooftop Quad B">
+                Tech City Hub
+              </button>
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Apex Logistics Terminal" data-detail="Bay Row 14 Loading Dock">
+                Apex Terminal
+              </button>
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Green Crossing Sub-station" data-detail="Docking Stand 3 Rear">
+                Green Substation
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Field 3: Calendar Date Picker (1 Date) -->
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-sans">Launch Due Date</label>
+            <input 
+              id="mission-due-date"
+              type="date" 
+              required
+              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2.5 px-3.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500/50 transition-all font-mono [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-80 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:hover:opacity-100"
+            />
+          </div>
+
+          <!-- Field 4: 24h Time Out matching system Timezone -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest text-[9px]">Time (24h)</label>
+              <span id="system-tz-lbl" class="text-[8px] font-bold text-blue-400/80 font-mono tracking-wider uppercase">UTC-5</span>
+            </div>
+            <select 
+              id="mission-due-time" 
+              required
+              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2.5 px-3.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500/50 transition-all font-mono cursor-pointer"
+            >
+              <!-- Populated by JavaScript and calculated with correct default timestamps -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Submit Button Footer -->
+        <div class="flex justify-end gap-3 pt-4 border-t border-[#192239]">
+          <button 
+            type="button" 
+            id="cancel-modal-trigger"
+            class="px-4 py-2 border border-[#1c2438] hover:bg-[#1a233b] hover:text-white transition-colors text-slate-400 font-bold text-xs rounded-lg uppercase tracking-wider cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors shadow-md shadow-blue-500/20 uppercase tracking-wider cursor-pointer"
+          >
+            Deploy Flight
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- DEPLOYMENT SUCCESS MODAL OVERLAY -->
+  <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0e1220] border-2 border-emerald-500/40 rounded-xl w-full max-w-sm p-6 shadow-2xl relative text-center scale-95 transition-transform duration-300" id="success-modal-content">
+
+      <!-- High tech emerald success visual state -->
+      <div class="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4 animate-bounce">
+        <CheckCircle2 class="w-6 h-6" />
+      </div>
+
+      <!-- Detail Headers -->
+      <h3 class="text-sm font-extrabold text-white tracking-widest uppercase mb-1">Flight Deployed</h3>
+      <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mb-5">Telemetry Connection Established</p>
+
+      <!-- Key Value Display Panel -->
+      <div class="bg-[#0b0e1a] border border-[#1b253b] rounded-lg p-3.5 text-left mb-6 space-y-2">
+        <div class="flex justify-between items-center text-[10px] font-semibold border-b border-[#151c2e] pb-1.5">
+          <span class="text-slate-500 uppercase">Mission ID</span>
+          <span class="text-white font-mono font-bold text-xs text-blue-400" id="success-mission-id">--</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px] font-semibold border-b border-[#151c2e] pb-1.5">
+          <span class="text-slate-500 uppercase">Station Dock</span>
+          <span class="text-slate-200" id="success-mission-dock">--</span>
+        </div>
+        <div class="flex justify-between text-[10px] font-semibold">
+          <span class="text-slate-500 uppercase shrink-0">Address</span>
+          <span class="text-slate-200 text-right truncate max-w-[180px]" id="success-mission-address">--</span>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button 
+        type="button" 
+        id="dismiss-success-btn"
+        class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg transition-all shadow-md shadow-emerald-500/10 uppercase tracking-widest cursor-pointer"
+      >
+        Acknowledge Mission
+      </button>
+    </div>
+  </div>
+
+  <!-- CANCEL MISSION CONFIRMATION MODAL -->
+  <div id="cancel-mission-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0e1220] border-2 border-rose-500/40 rounded-xl w-full max-w-sm p-6 shadow-2xl relative text-center scale-95 transition-transform duration-300" id="cancel-modal-content">
+
+      <!-- Tech visual warning/alert icon -->
+      <div class="mx-auto w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-4 animate-pulse">
+        <ShieldAlert class="w-6 h-6" />
+      </div>
+
+      <!-- Detail Headers -->
+      <h3 class="text-sm font-extrabold text-white tracking-widest uppercase mb-1">Cancel Mission?</h3>
+      <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mb-3">Flight Abort & Recovery Authorization</p>
+
+      <!-- Helper text displaying automatic return-to-base message -->
+      <div class="p-3 bg-rose-500/5 border border-rose-500/10 rounded-lg mb-6">
+        <p class="text-[11px] text-rose-300 font-medium leading-relaxed">
+          Are you sure you want to terminate mission <span id="cancel-mission-id" class="font-mono font-bold text-white">--</span>?
+        </p>
+        <p class="text-[10px] text-slate-400 font-medium mt-1">
+          ⚠️ <strong>Flight Assist Safety Action:</strong> The drone <span id="cancel-drone-id" class="font-mono font-bold text-slate-200">--</span> will immediately abort current telemetry progress and return to designated base station.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-3">
+        <button 
+          type="button" 
+          id="close-cancel-modal-btn"
+          class="py-2.5 border border-[#1b253b] hover:bg-[#1a233b] text-slate-300 hover:text-white font-bold text-xs rounded-lg transition-all uppercase tracking-wider cursor-pointer"
+        >
+          No, Resume
+        </button>
+        <button 
+          type="button" 
+          id="confirm-abort-btn"
+          class="py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-lg transition-all shadow-md shadow-rose-500/15 uppercase tracking-wider cursor-pointer"
+        >
+          Abort Flight
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive script for Search, Filter & Tabs -->
+  <script>
+    let currentPage = 1;
+    const itemsPerPage = 4;
+    const rows = document.querySelectorAll('.delivery-row');
+    let filteredRows = Array.from(rows);
+
+    const prevBtn = document.getElementById('prev-page-btn') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('next-page-btn') as HTMLButtonElement | null;
+    const page1Btn = document.getElementById('page-1-btn') as HTMLButtonElement | null;
+    const page2Btn = document.getElementById('page-2-btn') as HTMLButtonElement | null;
+    const rangeStart = document.getElementById('range-start');
+    const rangeEnd = document.getElementById('range-end');
+    const searchInput = document.getElementById('delivery-search-input') as HTMLInputElement | null;
+
+    function updateDeliveriesUI() {
+      const totalItems = filteredRows.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+      // Disable/Enable states
+      if (prevBtn) prevBtn.disabled = currentPage === 1;
+      if (nextBtn) nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+
+      // Active / Inactive pagination values
+      if (page1Btn) {
+        if (currentPage === 1) {
+          page1Btn.classList.add('bg-[#1d4ed8]', 'text-white');
+          page1Btn.classList.remove('text-slate-500');
+        } else {
+          page1Btn.classList.remove('bg-[#1d4ed8]', 'text-white');
+          page1Btn.classList.add('text-slate-500');
+        }
+      }
+
+      if (page2Btn) {
+        if (currentPage === 2) {
+          page2Btn.classList.add('bg-[#1d4ed8]', 'text-white');
+          page2Btn.classList.remove('text-slate-500');
+        } else {
+          page2Btn.classList.remove('bg-[#1d4ed8]', 'text-white');
+          page2Btn.classList.add('text-slate-500');
+        }
+      }
+
+      // Hide all rows initially
+      rows.forEach(row => row.classList.add('hidden'));
+
+      // Slicing Indexes
+      const startIdx = (currentPage - 1) * itemsPerPage;
+      const endIdx = Math.min(startIdx + itemsPerPage, totalItems);
+
+      if (rangeStart) rangeStart.textContent = totalItems === 0 ? "0" : (startIdx + 1).toString();
+      if (rangeEnd) rangeEnd.textContent = endIdx.toString();
+
+      // Show rows matching index parameters
+      filteredRows.forEach((row, i) => {
+        if (i >= startIdx && i < endIdx) {
+          row.classList.remove('hidden');
+        }
+      });
+    }
+
+    if (prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentPage > 1) {
+          currentPage--;
+          updateDeliveriesUI();
+        }
+      });
+
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentPage < 2) {
+          currentPage++;
+          updateDeliveriesUI();
+        }
+      });
+    }
+
+    if (page1Btn && page2Btn) {
+      page1Btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentPage = 1;
+        updateDeliveriesUI();
+      });
+
+      page2Btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentPage = 2;
+        updateDeliveriesUI();
+      });
+    }
+
+    // Interactive Realtime Search Filtering
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+
+        filteredRows = Array.from(rows).filter(row => {
+          const text = row.textContent?.toLowerCase() || '';
+          return text.includes(query);
+        });
+
+        currentPage = 1;
+        updateDeliveriesUI();
+      });
+    }
+
+    // Interactive Sidebar logic with dynamic Google Maps iframe binding
+    const sidebar = document.getElementById('tactical-sidebar');
+    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+    const activeDroneLbl = document.getElementById('active-drone-lbl');
+    const activeIdLbl = document.getElementById('active-id-lbl');
+    const activeAddressLbl = document.getElementById('active-address-lbl');
+    const activeEtaLbl = document.getElementById('active-eta-lbl');
+    const activeStatusLbl = document.getElementById('active-status-lbl');
+    const mapContainer = document.getElementById('map-iframe-container');
+    const focusBtn = document.getElementById('focus-location-btn');
+
+    let currentSelectedAddress = '';
+
+    function getGoogleMapIframeUrl(address: string) {
+      // Safe URL encoding of address fields to pass to embeds
+      const query = encodeURIComponent(address + ", Sector Airspace");
+      // Use clean, seamless embed style with dark theme elements through map style parameters if support permits
+      return `https://maps.google.com/maps?q=${query}&t=k&z=17&ie=UTF8&iwloc=&output=embed`;
+    }
+
+    rows.forEach(row => {
+      row.addEventListener('click', () => {
+        const deliveryRow = row as HTMLElement;
+        const id = deliveryRow.getAttribute('data-id') || '';
+        const drone = deliveryRow.getAttribute('data-drone') || '';
+        const address = deliveryRow.getAttribute('data-address') || '';
+        const eta = deliveryRow.getAttribute('data-eta') || '';
+        const status = deliveryRow.getAttribute('data-status') || '';
+
+        // Highlight selected row visual outline
+        rows.forEach(r => r.classList.remove('bg-blue-950/30', 'border-l-2', 'border-blue-500'));
+        deliveryRow.classList.add('bg-blue-950/30', 'border-l-2', 'border-blue-500');
+
+        // Update Text labels inside Dynamic Airspace
+        if (activeDroneLbl) activeDroneLbl.textContent = `DRONE: ${drone.toUpperCase()}`;
+        if (activeIdLbl) activeIdLbl.textContent = id;
+        if (activeAddressLbl) activeAddressLbl.textContent = address;
+        if (activeEtaLbl) activeEtaLbl.textContent = `ETA ${eta}`;
+
+        if (activeStatusLbl) {
+          activeStatusLbl.textContent = status;
+          if (status === 'DELAYED') {
+            activeStatusLbl.className = 'text-rose-400 text-[8px] font-bold';
+          } else if (status === 'FINAL APPROACH') {
+            activeStatusLbl.className = 'text-emerald-400 text-[8px] font-bold';
+          } else {
+            activeStatusLbl.className = 'text-blue-400 text-[8px] font-bold';
+          }
+        }
+
+        currentSelectedAddress = address;
+
+        // Render live satellite overlay map using standard embed
+        if (mapContainer) {
+          mapContainer.innerHTML = `
+            <iframe 
+              src="${getGoogleMapIframeUrl(address)}" 
+              class="w-full h-full border-0 rounded-xl"
+              style="filter: grayscale(0.8) contrast(1.1) invert(0.9) hue-rotate(180deg);"
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          `;
+        }
+
+        // Slide side panel in elegantly if hidden
+        if (sidebar) {
+          sidebar.classList.remove('hidden');
+        }
+      });
+    });
+
+    if (closeSidebarBtn && sidebar) {
+      closeSidebarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.add('hidden');
+        // Clear selection background classes
+        rows.forEach(r => r.classList.remove('bg-blue-950/30', 'border-l-2', 'border-blue-500'));
+      });
+    }
+
+    if (focusBtn) {
+      focusBtn.addEventListener('click', () => {
+        if (currentSelectedAddress && mapContainer) {
+          // Re-trigger location alignment centering
+          mapContainer.innerHTML = `
+            <iframe 
+              src="${getGoogleMapIframeUrl(currentSelectedAddress)}" 
+              class="w-full h-full border-0 rounded-xl"
+              style="filter: grayscale(0.8) contrast(1.1) invert(0.9) hue-rotate(180deg);"
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          `;
+        }
+      });
+    }
+
+    // Modal Interaction Handlers
+    const modal = document.getElementById('new-mission-modal');
+    const modalContent = document.getElementById('new-mission-modal-content');
+    const trigger = document.getElementById('new-mission-trigger');
+    const closeModalBtn = document.getElementById('close-modal-trigger');
+    const cancelModalBtn = document.getElementById('cancel-modal-trigger');
+    const form = document.getElementById('new-mission-form') as HTMLFormElement | null;
+    const idleZoneSelect = document.getElementById('mission-idle-zone') as HTMLSelectElement | null;
+    const locationInput = document.getElementById('mission-location') as HTMLInputElement | null;
+    const dueDateInput = document.getElementById('mission-due-date') as HTMLInputElement | null;
+    const dueTimeSelect = document.getElementById('mission-due-time') as HTMLSelectElement | null;
+    const systemTzLbl = document.getElementById('system-tz-lbl');
+    const savedTrigger = document.getElementById('use-saved-address-trigger');
+    const savedWrapper = document.getElementById('saved-addresses-selector');
+    const hideSavedBtn = document.getElementById('hide-saved-trigger');
+    const savedAddrButtons = document.querySelectorAll('.saved-addr-btn');
+    const suggestionsBox = document.getElementById('autocomplete-suggestions');
+    const suggestionsList = document.getElementById('suggestions-list');
+
+    // Setup Current Timezone representation
+    const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tzOffsetRaw = new Date().getTimezoneOffset();
+    const tzOffsetHours = Math.abs(Math.floor(tzOffsetRaw / 60));
+    const tzOffsetMinutes = Math.abs(tzOffsetRaw % 60);
+    const tzSign = tzOffsetRaw <= 0 ? '+' : '-';
+    const tzFormatted = `UTC${tzSign}${tzOffsetHours.toString().padStart(2, '0')}:${tzOffsetMinutes.toString().padStart(2, '0')}`;
+
+    if (systemTzLbl) {
+      systemTzLbl.textContent = `${tzName} (${tzFormatted})`;
+    }
+
+    // Populate Time Dropdown (24 hours format with 30-minute intervals)
+    if (dueTimeSelect) {
+      dueTimeSelect.innerHTML = '';
+      for (let h = 0; h < 24; h++) {
+        for (let m = 0; h === 23 && m === 30 ? false : m < 60; m += 30) {
+          if (h === 23 && m === 30) {
+            // Include final 23:59
+            const optEnd = document.createElement('option');
+            optEnd.value = '23:59';
+            optEnd.textContent = '23:59';
+            dueTimeSelect.appendChild(optEnd);
+            break;
+          }
+          const hourStr = h.toString().padStart(2, '0');
+          const minStr = m.toString().padStart(2, '0');
+          const val = `${hourStr}:${minStr}`;
+
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = val;
+          // Set intelligent pre-selection for typical next hour delivery
+          const currentHour = new Date().getHours();
+          if (h === (currentHour + 1) % 24 && m === 0) {
+            opt.selected = true;
+          }
+          dueTimeSelect.appendChild(opt);
+        }
+      }
+    }
+
+    // Set intelligent today/tomorrow date boundary limits on the calendar date selector input
+    if (dueDateInput) {
+      const todayISO = new Date().toISOString().split('T')[0];
+      dueDateInput.min = todayISO;
+      dueDateInput.value = todayISO;
+    }
+
+    // Address Autocomplete Suggestions (Google Maps Addresses mock database lookup simulation)
+    const googleMapsAddresses = [
+      '742 Skyview Terrace, Sector 7 Upper City, Metro Area',
+      'St. Jude Medical Complex, Roof Deck A Dock 12',
+      '12 Industrial Way, Dock 4 Warehouse Alpha, East Sector',
+      '33 Central Plaza, Level 15 Suite 400, Center Square',
+      '102 Technopark Dr, Gate C Assembly Hub',
+      '45 Market Street, Main Entrance East, Commercial Quarter',
+      'Skyline Towers, Penthouse B West, Heights Sector',
+      'Green Crossing Plaza, Dock 3 Rear, North District',
+      'NASA Research Base Gate 3, Space Center Way',
+      'Silicon Boulevard Building 4, North-West Core Area'
+    ];
+
+    if (locationInput) {
+      locationInput.addEventListener('input', () => {
+        const value = locationInput.value.toLowerCase().trim();
+        if (!value) {
+          if (suggestionsBox) suggestionsBox.classList.add('hidden');
+          return;
+        }
+
+        const matches = googleMapsAddresses.filter(addr => addr.toLowerCase().includes(value));
+
+        if (matches.length > 0 && suggestionsList && suggestionsBox) {
+          suggestionsList.innerHTML = '';
+          matches.forEach(match => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'w-full text-left px-4 py-2 text-xs text-slate-300 hover:text-white hover:bg-[#1a233b] transition-colors focus:outline-none';
+            // Bold matching chars
+            const matchIndex = match.toLowerCase().indexOf(value);
+            const before = match.substring(0, matchIndex);
+            const bolded = match.substring(matchIndex, matchIndex + value.length);
+            const after = match.substring(matchIndex + value.length);
+            item.innerHTML = `${before}<strong class="text-blue-400 font-bold">${bolded}</strong>${after}`;
+
+            item.addEventListener('click', () => {
+              locationInput.value = match;
+              suggestionsBox.classList.add('hidden');
+            });
+            suggestionsList.appendChild(item);
+          });
+          suggestionsBox.classList.remove('hidden');
+        } else {
+          if (suggestionsBox) suggestionsBox.classList.add('hidden');
+        }
+      });
+
+      // Close suggestions on outside clicks
+      document.addEventListener('click', (e) => {
+        if (suggestionsBox && !suggestionsBox.contains(e.target as Node) && e.target !== locationInput) {
+          suggestionsBox.classList.add('hidden');
+        }
+      });
+    }
+
+    // Toggle Saved Address lists
+    if (savedTrigger && savedWrapper) {
+      savedTrigger.addEventListener('click', () => {
+        savedWrapper.classList.toggle('hidden');
+      });
+    }
+
+    if (hideSavedBtn && savedWrapper) {
+      hideSavedBtn.addEventListener('click', () => {
+        savedWrapper.classList.add('hidden');
+      });
+    }
+
+    // Apply Saved Address triggers click behavior
+    savedAddrButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const address = btn.getAttribute('data-address') || '';
+        const detail = btn.getAttribute('data-detail') || '';
+        if (locationInput) {
+          locationInput.value = `${address}, ${detail}`;
+        }
+        if (savedWrapper) {
+          savedWrapper.classList.add('hidden');
+        }
+      });
+    });
+
+    // Handle show actions
+    if (trigger && modal) {
+      trigger.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          modal.classList.add('opacity-100');
+          if (modalContent) modalContent.classList.remove('scale-95');
+        }, 10);
+      });
+    }
+
+    function closeModal() {
+      if (modal && modalContent) {
+        modal.classList.remove('opacity-100');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+
+    // Dynamic submit callback (simulates adding a new real logistics flight row)
+    const successModal = document.getElementById('success-modal');
+    const successModalContent = document.getElementById('success-modal-content');
+    const dismissSuccessBtn = document.getElementById('dismiss-success-btn');
+    const successId = document.getElementById('success-mission-id');
+    const successDock = document.getElementById('success-mission-dock');
+    const successAddress = document.getElementById('success-mission-address');
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const zone = idleZoneSelect?.value || 'Downtown Hub';
+        const address = locationInput?.value || '';
+        const date = dueDateInput?.value || '';
+        const time = dueTimeSelect?.value || '';
+
+        // Generate dynamic ID for new flight mission item
+        const randId = `DLV-${Math.floor(8100 + Math.random() * 800)}`;
+
+        // Output trace log into simulation stream console
+        console.log(`Dispatched #${randId} targeting ${address} from deployment bay ${zone}`);
+
+        // Update Success Modal Context Elements
+        if (successId) successId.textContent = `#${randId}`;
+        if (successDock) successDock.textContent = zone;
+        if (successAddress) successAddress.textContent = address;
+
+        // Reset fields and close planning form modal
+        form.reset();
+        if (dueDateInput) {
+          dueDateInput.value = new Date().toISOString().split('T')[0];
+        }
+
+        // Close scheduling drawer panel
+        closeModal();
+
+        // Dynamically pop open pristine tactical success response modal overlay
+        if (successModal) {
+          successModal.classList.remove('hidden');
+          setTimeout(() => {
+            successModal.classList.add('opacity-100');
+            if (successModalContent) successModalContent.classList.remove('scale-95');
+          }, 50);
+        }
+      });
+    }
+
+    if (dismissSuccessBtn && successModal && successModalContent) {
+      dismissSuccessBtn.addEventListener('click', () => {
+        successModal.classList.remove('opacity-100');
+        successModalContent.classList.add('scale-95');
+        setTimeout(() => {
+          successModal.classList.add('hidden');
+        }, 300);
+      });
+    }
+
+    // Cancel Mission Warning Modal Interactions
+    const cancelModal = document.getElementById('cancel-mission-modal');
+    const cancelCont = document.getElementById('cancel-modal-content');
+    const cancelIdLbl = document.getElementById('cancel-mission-id');
+    const cancelDroneLbl = document.getElementById('cancel-drone-id');
+    const closeCancelBtn = document.getElementById('close-cancel-modal-btn');
+    const confirmCancelBtn = document.getElementById('confirm-abort-btn');
+    const cancelRowButtons = document.querySelectorAll('.cancel-mission-btn');
+
+    cancelRowButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent launching Tactical map when trying to cancel row
+        const targetId = btn.getAttribute('data-id') || '';
+        const targetDrone = btn.getAttribute('data-drone') || '';
+
+        // Inject info
+        if (cancelIdLbl) cancelIdLbl.textContent = targetId;
+        if (cancelDroneLbl) cancelDroneLbl.textContent = targetDrone;
+
+        // Open Warning Abort Overlay Modal
+        if (cancelModal) {
+          cancelModal.classList.remove('hidden');
+          setTimeout(() => {
+            cancelModal.classList.add('opacity-100');
+            if (cancelCont) cancelCont.classList.remove('scale-95');
+          }, 10);
+        }
+      });
+    });
+
+    function closeCancelModal() {
+      if (cancelModal && cancelCont) {
+        cancelModal.classList.remove('opacity-100');
+        cancelCont.classList.add('scale-95');
+        setTimeout(() => {
+          cancelModal.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    if (closeCancelBtn) {
+      closeCancelBtn.addEventListener('click', closeCancelModal);
+    }
+
+    if (confirmCancelBtn) {
+      confirmCancelBtn.addEventListener('click', () => {
+        const id = cancelIdLbl?.textContent || '';
+        const drone = cancelDroneLbl?.textContent || '';
+        alert(`ABORT AUTHORIZED!\n\nFlight ${id} aborted. Tracking telemetry commands: Drone ${drone} is executing safety procedures and returning to base.`);
+        closeCancelModal();
+
+        // Optional UX: visual indicator that item is cancelled / terminating status
+        const rowsToScan = document.querySelectorAll('.delivery-row');
+        rowsToScan.forEach(row => {
+          const rowEl = row as HTMLElement;
+          if (rowEl.getAttribute('data-id') === id) {
+            // Find status badge and update to ABORTED/RETURNING
+            const statusCell = rowEl.querySelector('td:nth-child(4) div');
+            if (statusCell) {
+              statusCell.className = "inline-flex items-center gap-1.5 py-0.5 px-2 bg-yellow-500/10 border border-yellow-500/20 rounded-md text-[9px] font-bold text-yellow-400 uppercase tracking-wilder";
+              statusCell.textContent = "Aborted - RTB";
+            }
+          }
+        });
+      });
+    }
+
+    // Run initial UI configurations
+    updateDeliveriesUI();
+  </script>
+</Layout>
