@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://github.com/stjhin/pluto',
-  base: '/pluto/',  // Replace with your repo name
+  site: 'https://stjhin.github.io',  // ← FIXED: GitHub Pages URL
+  base: '/pluto/',                    // ← Your repo name
   vite: {
     plugins: [tailwindcss()]
   }
