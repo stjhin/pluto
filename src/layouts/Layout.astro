@@ -1,8 +1,8 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 interface Props {
-	title?: string;
+  title?: string;
 }
 
 const { title = "Pluto Fleet Command" } = Astro.props;
@@ -10,44 +10,113 @@ const { title = "Pluto Fleet Command" } = Astro.props;
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		<!-- Google Fonts for Inter and JetBrains Mono or similar -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-	</head>
-	<body class="bg-[#0c101d] text-[#e2e8f0] font-sans antialiased overflow-x-hidden selection:bg-blue-500/30 selection:text-white min-h-screen">
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <!-- Google Fonts for Inter and JetBrains Mono or similar -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-[#0c101d] text-[#e2e8f0] font-sans antialiased overflow-x-hidden selection:bg-blue-500/30 selection:text-white min-h-screen"
+  >
+    <!-- Mobile sidebar overlay backdrop -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden transition-opacity duration-300" aria-hidden="true"></div>
+    <slot />
+    <!-- Mobile sidebar toggle script -->
+    <script>
+      function initMobileSidebar() {
+        const overlay = document.getElementById('sidebar-overlay');
+        const sidebar = document.querySelector('.mobile-sidebar');
+        const toggleBtn = document.getElementById('mobile-menu-toggle');
+
+        if (!overlay || !sidebar || !toggleBtn) return;
+
+        function openSidebar() {
+          sidebar.classList.remove('hidden');
+          overlay.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+          sidebar.classList.add('hidden');
+          overlay.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (sidebar.classList.contains('hidden')) {
+            openSidebar();
+          } else {
+            closeSidebar();
+          }
+        });
+
+        // Also wire up close buttons inside the sidebar
+        const closeBtns = sidebar.querySelectorAll('#mobile-menu-close, #mobile-menu-close-bottom');
+        closeBtns.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeSidebar();
+          });
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !sidebar.classList.contains('hidden')) {
+            closeSidebar();
+          }
+        });
+      }
+
+      // Run on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileSidebar);
+      } else {
+        initMobileSidebar();
+      }
+    </script>
+  </body>
 </html>
 
 <style is:global>
-	:root {
-		font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-	}
-	code, pre, .font-mono {
-		font-family: 'JetBrains Mono', monospace;
-	}
-	
-	/* Custom scrollbar */
-	::-webkit-scrollbar {
-		width: 6px;
-		height: 6px;
-	}
-	::-webkit-scrollbar-track {
-		background: #0f1524;
-	}
-	::-webkit-scrollbar-thumb {
-		background: #1e293b;
-		border-radius: 4px;
-	}
-	::-webkit-scrollbar-thumb:hover {
-		background: #334155;
-	}
+  :root {
+    font-family:
+      "Plus Jakarta Sans",
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+  code,
+  pre,
+  .font-mono {
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0f1524;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
 </style>

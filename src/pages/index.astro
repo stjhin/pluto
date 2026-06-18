@@ -88,15 +88,16 @@ const failedLogs = [
 ---
 
 <Layout title="PLUTO Fleet Command | Drones">
-  <div class="flex h-screen overflow-hidden bg-[#0a0d16]">
+  <div class="flex h-screen overflow-hidden bg-[#0a0d16] relative">
     <!-- LEFT SIDEBAR -->
     <aside
-      class="w-64 bg-[#0e1220] border-r border-[#192239] flex flex-col justify-between shrink-0"
+      class="mobile-sidebar hidden lg:flex w-64 bg-[#0e1220] border-r border-[#192239] flex-col justify-between shrink-0 fixed lg:relative inset-y-0 left-0 z-40 shadow-2xl lg:shadow-none"
     >
       <div>
         <!-- Brand / Identity -->
         <div class="p-6 border-b border-[#192239]">
-          <div class="flex items-center gap-2.5">
+          <div class="flex items-center gap-2.5 justify-between">
+            <div class="flex items-center gap-2.5">
             <div
               class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20"
             >
@@ -114,6 +115,13 @@ const failedLogs = [
                 Fleet Command
               </p>
             </div>
+            </div>
+            <!-- Mobile close button -->
+            <button id="mobile-menu-close" class="lg:hidden p-1 text-slate-400 hover:text-white -mr-1" aria-label="Close menu">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -180,12 +188,19 @@ const failedLogs = [
     <div class="flex flex-1 overflow-hidden">
       <!-- CENTRAL CONTENT AREA -->
       <main
-        class="flex-1 overflow-y-auto p-8 space-y-8 bg-[#0a0d16] border-r border-[#192239]"
+        class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-4 lg:space-y-8 bg-[#0a0d16] lg:border-r border-[#192239]"
       >
         <!-- Header Controls -->
-        <div class="flex justify-between items-center gap-4">
-          <!-- Live Status Indicator -->
-          <div class="flex items-center gap-2">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+          <!-- Mobile hamburger + Live Status -->
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <!-- Hamburger menu button (mobile only) -->
+            <button id="mobile-menu-toggle" class="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-[#171f34] transition-colors shrink-0" aria-label="Open menu">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+            <div class="flex items-center gap-2">
             <span class="relative flex h-2 w-2">
               <span
                 class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
@@ -199,9 +214,10 @@ const failedLogs = [
               >Live Operations Active</span
             >
           </div>
+          </div>
 
           <!-- Search Bar -->
-          <div class="relative w-80">
+          <div class="relative w-full lg:w-80">
             <Search
               class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
             />
@@ -226,7 +242,7 @@ const failedLogs = [
         </div>
 
         <!-- Metric Cards -->
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
           <!-- Card 1: Total Delivery -->
           <div
             class="relative overflow-hidden bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 transition-all duration-300 hover:border-[#283556]"
@@ -494,7 +510,7 @@ const failedLogs = [
         </div>
 
         <!-- Lower Analytics Grid -->
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
           <!-- Left: Operational Performance -->
           <div
             class="bg-[#0e1220] border border-[#192239] rounded-xl p-6 shadow-md space-y-6"
@@ -582,7 +598,7 @@ const failedLogs = [
       <!-- RIGHT SIDEBAR (Delivery Logs) -->
       <aside
         id="delivery-logs-drawer"
-        class="w-96 bg-[#0e1220] flex flex-col shrink-0 border-l border-[#192239] transition-all duration-300"
+        class="hidden lg:flex w-80 lg:w-96 bg-[#0e1220] flex-col shrink-0 border-l border-[#192239] transition-all duration-300 fixed lg:relative right-0 inset-y-0 z-50 shadow-2xl lg:shadow-none"
       >
         <!-- Tabbed Header -->
         <div class="p-6 border-b border-[#192239]">
@@ -720,43 +736,52 @@ const failedLogs = [
     const drawer = document.getElementById("delivery-logs-drawer");
 
     if (openBtn && closeBtn && drawer) {
-      // Toggle function for the openBtn
+      function openDrawer() {
+        drawer.classList.remove("hidden");
+        drawer.classList.add("flex");
+        // On mobile, add overlay
+        const overlay = document.getElementById('sidebar-overlay');
+        if (overlay && window.innerWidth < 1024) {
+          overlay.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeDrawer() {
+        drawer.classList.add("hidden");
+        drawer.classList.remove("flex");
+        const overlay = document.getElementById('sidebar-overlay');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      }
+
       openBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        // Let's use simple style-based toggling which guarantees behavior independent of complex class states
-        if (
-          drawer.style.display === "none" ||
-          drawer.classList.contains("hidden") ||
-          drawer.style.width === "0px"
-        ) {
-          // Open
-          drawer.style.display = "flex";
-          drawer.style.width = "384px"; // 96 * 4 = 384px
-          drawer.style.opacity = "1";
-          drawer.classList.remove("hidden", "w-0", "opacity-0");
-          drawer.classList.add("w-96", "opacity-100");
+        if (drawer.classList.contains("hidden")) {
+          openDrawer();
         } else {
-          // Close
-          drawer.style.display = "none";
-          drawer.style.width = "0px";
-          drawer.style.opacity = "0";
-          drawer.classList.add("hidden", "w-0", "opacity-0");
-          drawer.classList.remove("w-96", "opacity-100");
+          closeDrawer();
         }
       });
 
-      // Close Drawer function
       closeBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        drawer.style.display = "none";
-        drawer.style.width = "0px";
-        drawer.style.opacity = "0";
-        drawer.classList.add("hidden", "w-0", "opacity-0");
-        drawer.classList.remove("w-96", "opacity-100");
+        closeDrawer();
       });
+
+      // Close drawer on overlay click
+      const overlay = document.getElementById('sidebar-overlay');
+      if (overlay) {
+        overlay.addEventListener('click', () => {
+          if (!drawer.classList.contains('hidden')) {
+            closeDrawer();
+          }
+        });
+      }
     }
 
     // Interactive Pagination script
