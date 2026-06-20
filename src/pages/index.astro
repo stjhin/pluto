@@ -272,9 +272,7 @@ const failedLogs = [
         </div>
 
         <!-- Table Panel: Drone Fleet Status -->
-        <div
-          class="bg-[#0e1220] border border-[#192239] rounded-xl overflow-hidden shadow-lg"
-        >
+        <Grid paginationLabel={`Showing <strong class="text-white" id="range-start">1</strong>-<strong class="text-white" id="range-end">7</strong> of <strong class="text-white" id="total-count">${drones.length}</strong> active units`}>
           <!-- Panel Header -->
           <div
             class="p-5 border-b border-[#192239] flex justify-between items-center bg-[#111628]"
@@ -298,7 +296,6 @@ const failedLogs = [
             </div>
           </div>
 
-          <Grid paginationLabel={`Showing <strong class="text-white" id="range-start">1</strong>-<strong class="text-white" id="range-end">7</strong> of <strong class="text-white" id="total-count">${drones.length}</strong> active units`}>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="drone-table">
               <thead>
@@ -388,7 +385,6 @@ const failedLogs = [
           </div>
 
         </Grid>
-        </div>
 
         <!-- Lower Analytics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
@@ -723,17 +719,17 @@ const failedLogs = [
       }
 
       // ── Tab Toggle ──
-    const successTabBtn = document.getElementById("success-tab-btn");
-    const failedTabBtn = document.getElementById("failed-tab-btn");
-    const successLogs = document.getElementById("success-logs-container");
-    const failedLogs = document.getElementById("failed-logs-container");
+      const successTabBtn = document.getElementById("success-tab-btn");
+      const failedTabBtn = document.getElementById("failed-tab-btn");
+      const successLogs = document.getElementById("success-logs-container");
+      const failedLogs = document.getElementById("failed-logs-container");
 
       if (!successTabBtn || !failedTabBtn || !successLogs || !failedLogs) return;
 
       const ACTIVE = ["border-blue-500", "text-white", "font-bold"];
       const INACTIVE = ["border-transparent", "text-slate-500", "font-medium"];
 
-      const activateTab = (active, inactive) => {
+      const activateTab = (active: HTMLElement, inactive: HTMLElement) => {
         active.classList.add(...ACTIVE);
         active.classList.remove(...INACTIVE);
         inactive.classList.remove(...ACTIVE);
@@ -762,7 +758,7 @@ const failedLogs = [
           });
           row.classList.add("bg-blue-950/30", "border-l-2", "border-blue-500");
 
-          const get = (attr) => row.getAttribute(attr) || "";
+          const get = (attr: string) => row.getAttribute(attr) || "";
           const id = get("data-id");
           const location = get("data-location");
           const status = get("data-status");
@@ -772,8 +768,8 @@ const failedLogs = [
           const pctColor = pct >= 95 ? "#10b981" : pct >= 90 ? "#60a5fa" : "#f59e0b";
 
           // Populate detail fields
-          const el = (sel) => document.querySelector(`#drone-detail-drawer ${sel}`);
-          const set = (sel, val) => { const e = el(sel); if (e) e.textContent = val; };
+          const el = (sel: string) => document.querySelector(`#drone-detail-drawer ${sel}`) as HTMLElement | null;
+          const set = (sel: string, val: string) => { const e = el(sel); if (e) e.textContent = val; };
           set("#drone-detail-id", id);
           set("#drone-detail-location", location);
           set("#drone-detail-status", status);
