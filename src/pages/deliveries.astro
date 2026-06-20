@@ -5,6 +5,7 @@ import SearchBar from '../components/SearchBar.astro';
 import Drawer from '../components/Drawer.astro';
 import PageTitle from '../components/PageTitle.astro';
 import HeaderUtilityIcons from '../components/HeaderUtilityIcons.astro';
+import Grid from '../components/Grid.astro';
 import { 
   Package,
   Search, 
@@ -157,7 +158,7 @@ const metrics = {
         </div>
 
         <!-- Deliveries Table Grid -->
-        <div class="bg-[#0e1220] border border-[#192239] rounded-xl overflow-hidden shadow-lg">
+        <Grid>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="deliveries-table">
               <thead>
@@ -272,7 +273,7 @@ const metrics = {
               <button id="next-page-btn" class="px-2.5 py-1 text-slate-500 font-bold uppercase tracking-wide hover:text-white hover:bg-[#161d31] rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Next</button>
             </div>
           </div>
-        </div>
+        </Grid>
 
       </main>
 

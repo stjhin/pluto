@@ -5,6 +5,7 @@ import Drawer from "../components/Drawer.astro";
 import SearchBar from "../components/SearchBar.astro";
 import PageTitle from "../components/PageTitle.astro";
 import HeaderUtilityIcons from "../components/HeaderUtilityIcons.astro";
+import Grid from "../components/Grid.astro";
 import {
   Rocket,
   Package,
@@ -128,7 +129,8 @@ const totalRecords = allRecords.length;
       </div>
 
       <!-- Results Table -->
-      <div class="overflow-x-auto border border-[#192239] rounded-xl bg-[#0c0f17]">
+      <Grid paginationLabel={`Page <strong class="text-white" id="page-current">1</strong> of <strong class="text-white" id="page-total">1</strong>`}>
+        <div class="overflow-x-auto">
         <table class="w-full text-xs" id="results-table">
           <thead>
             <tr class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-[#192239] bg-[#0e1220]">
@@ -153,16 +155,8 @@ const totalRecords = allRecords.length;
           <p class="text-sm font-semibold text-slate-400">Search across {totalRecords} records</p>
           <p class="text-xs text-slate-500 mt-1">Type in the search bar above to find drones and deliveries</p>
         </div>
-      </div>
-
-      <!-- Pagination -->
-      <div id="pagination-bar" class="hidden items-center justify-between text-xs text-slate-400 font-semibold bg-[#0e1220] border border-[#192239] rounded-lg p-4">
-        <span id="pagination-indicator">Page <strong class="text-white" id="page-current">1</strong> of <strong class="text-white" id="page-total">1</strong></span>
-        <div class="flex gap-2">
-          <button id="prev-page-btn" class="px-3 py-2.5 min-h-[44px] bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Prev</button>
-          <button id="next-page-btn" class="px-3 py-2.5 min-h-[44px] bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Next</button>
         </div>
-      </div>
+      </Grid>
     </main>
 
     <!-- DETAIL DRAWER (right side) -->

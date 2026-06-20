@@ -1,0 +1,18 @@
+---
+// Grid.astro — shared table wrapper with optional pagination bar
+// Props:
+//   paginationLabel — raw HTML string for the pagination label (omitting hides pagination)
+const { paginationLabel = "" } = Astro.props;
+---
+<div class="bg-[#0e1220] border border-[#192239] rounded-xl overflow-hidden shadow-lg">
+  <slot />
+  {paginationLabel && (
+    <div id="pagination-bar" class="p-4 bg-[#111628] border-t border-[#192239] flex justify-between items-center text-xs text-slate-400 font-semibold">
+      <span id="pagination-indicator" set:html={paginationLabel} />
+      <div class="flex gap-2">
+        <button id="prev-page-btn" class="px-3 py-2.5 min-h-[44px] bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Prev</button>
+        <button id="next-page-btn" class="px-3 py-2.5 min-h-[44px] bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Next</button>
+      </div>
+    </div>
+  )}
+</div>

@@ -5,6 +5,7 @@ import SearchBar from "../components/SearchBar.astro";
 import Drawer from "../components/Drawer.astro";
 import PageTitle from "../components/PageTitle.astro";
 import HeaderUtilityIcons from "../components/HeaderUtilityIcons.astro";
+import Grid from "../components/Grid.astro";
 import {
   Rocket,
   Package,
@@ -297,7 +298,7 @@ const failedLogs = [
             </div>
           </div>
 
-          <!-- Interactive Table -->
+          <Grid paginationLabel={`Showing <strong class="text-white" id="range-start">1</strong>-<strong class="text-white" id="range-end">7</strong> of <strong class="text-white" id="total-count">${drones.length}</strong> active units`}>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="drone-table">
               <thead>
@@ -386,30 +387,7 @@ const failedLogs = [
             </table>
           </div>
 
-          <!-- Table Summary Footer -->
-          <div
-            class="p-4 bg-[#111628] border-t border-[#192239] flex justify-between items-center text-xs text-slate-400 font-semibold"
-          >
-            <span id="pagination-indicator"
-              >Showing <strong class="text-white" id="range-start">1</strong
-              >-<strong class="text-white" id="range-end">7</strong> of <strong
-                class="text-white"
-                id="total-count">{drones.length}</strong
-              > active units</span
-            >
-            <div class="flex gap-2">
-              <button
-                id="prev-page-btn"
-                class="px-3 py-1 bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                >Prev</button
-              >
-              <button
-                id="next-page-btn"
-                class="px-3 py-1 bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                >Next</button
-              >
-            </div>
-          </div>
+        </Grid>
         </div>
 
         <!-- Lower Analytics Grid -->
