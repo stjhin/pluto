@@ -1,0 +1,710 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Drawer from "../components/Drawer.astro";
+import SearchBar from "../components/SearchBar.astro";
+import PageTitle from "../components/PageTitle.astro";
+import HeaderUtilityIcons from "../components/HeaderUtilityIcons.astro";
+import {
+  Rocket,
+  Package,
+  TrendingUp,
+  Settings,
+  Search,
+  HelpCircle,
+  Sparkles,
+  X,
+  CircleDot,
+  SlidersHorizontal,
+  ArrowUpDown,
+} from "@lucide/astro";
+import fs from "node:fs";
+import path from "node:path";
+import { parse } from "csv-parse/sync";
+
+// ── Load drones ──
+const dronesCsv = fs.readFileSync(path.join(process.cwd(), "src/data/drones.csv"), "utf-8");
+const dronesRaw = parse(dronesCsv, { columns: true, skip_empty_lines: true, cast: true });
+const drones = dronesRaw.map((r: any) => ({
+  _type: "drone",
+  id: String(r.id),
+  location: String(r.location),
+  status: String(r.status),
+  attempts: Number(r.attempts),
+  success: Number(r.success),
+  pct: Number(r.pct),
+  _searchText: [String(r.id), String(r.location), String(r.status), String(r.attempts), String(r.success), String(r.pct)].join(" ").toLowerCase(),
+}));
+
+// ── Load deliveries ──
+const deliveriesCsv = fs.readFileSync(path.join(process.cwd(), "src/data/deliveries.csv"), "utf-8");
+const deliveriesRaw = parse(deliveriesCsv, { columns: true, skip_empty_lines: true, cast: true });
+const deliveries = deliveriesRaw.map((r: any) => ({
+  _type: "delivery",
+  id: String(r.id),
+  address: String(r.address),
+  addressDetail: String(r.addressDetail),
+  drone: String(r.drone),
+  status: String(r.status),
+  eta: String(r.eta),
+  etaDetail: String(r.etaDetail),
+  deliveryType: String(r.type),
+  _searchText: [String(r.id), String(r.address), String(r.addressDetail), String(r.drone), String(r.status), String(r.eta), String(r.etaDetail), String(r.type)].join(" ").toLowerCase(),
+}));
+
+const allRecords = [...drones, ...deliveries];
+const allStatuses = [...new Set(allRecords.map((r: any) => r.status))];
+const totalRecords = allRecords.length;
+
+// Data is passed to client via Astro's script expression serialization
+---
+
+<Layout title="PLUTO Fleet Command | Search">
+  <div class="flex h-screen overflow-hidden bg-[#0a0d16] relative">
+    <Navigation activePage="search" />
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-4 lg:space-y-6 bg-[#0a0d16]">
+      <!-- Header Controls -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+        <button id="mobile-menu-toggle" class="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-[#171f34] transition-colors shrink-0" aria-label="Open menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <div class="relative w-full lg:w-80 pr-8" role="search" aria-label="Search records">
+          <SearchBar placeholder="Search by ID, location, address, or status..." id="search-input" noRedirect={true} />
+          <button id="clear-search-btn" class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-slate-300 hidden transition-colors" title="Clear search">
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+
+        <HeaderUtilityIcons />
+      </div>
+
+      <PageTitle description="Search across all drones and deliveries — filter by type, status, and sort results">
+        <Search class="w-6 h-6 text-blue-400" /> Search
+      </PageTitle>
+
+      <!-- Filter & Sort Bar -->
+      <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between flex-wrap">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1">
+            <SlidersHorizontal class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />Type
+          </span>
+          <button data-filter="type" data-value="all" aria-pressed="true" class="filter-chip type-chip active px-3 py-2.5 min-h-[44px] text-xs font-semibold rounded-lg border transition-all bg-blue-500/15 border-blue-500/30 text-blue-400">All</button>
+          <button data-filter="type" data-value="drone" aria-pressed="false" class="filter-chip type-chip px-3 py-2.5 min-h-[44px] text-xs font-semibold rounded-lg border transition-all bg-transparent border-[#1b253b] text-slate-400 hover:border-slate-500">Drones</button>
+          <button data-filter="type" data-value="delivery" aria-pressed="false" class="filter-chip type-chip px-3 py-2.5 min-h-[44px] text-xs font-semibold rounded-lg border transition-all bg-transparent border-[#1b253b] text-slate-400 hover:border-slate-500">Deliveries</button>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap" id="status-filters">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1">Status</span>
+          <button data-filter="status" data-value="all" aria-pressed="true" class="filter-chip status-chip active px-3 py-2.5 min-h-[44px] text-xs font-semibold rounded-lg border transition-all bg-blue-500/15 border-blue-500/30 text-blue-400">All</button>
+          {allStatuses.map((s: string) => (
+            <button data-filter="status" data-value={s} aria-pressed="false" class="filter-chip status-chip px-3 py-2.5 min-h-[44px] text-xs font-semibold rounded-lg border transition-all bg-transparent border-[#1b253b] text-slate-400 hover:border-slate-500 capitalize">{s.toLowerCase().replace(/\b\w/g, (c: string) => c.toUpperCase())}</button>
+          ))}
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            <ArrowUpDown class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />Sort
+          </span>
+          <select id="sort-select" aria-label="Sort results by" class="bg-[#111625] border border-[#1b253b] rounded-lg py-2 px-3 text-xs text-slate-300 focus:outline-2 focus:outline-blue-500/50 focus:border-blue-500/50 cursor-pointer">
+            <option value="relevance">Relevance</option>
+            <option value="id-asc">ID (A → Z)</option>
+            <option value="id-desc">ID (Z → A)</option>
+            <option value="status-asc">Status (A → Z)</option>
+            <option value="status-desc">Status (Z → A)</option>
+            <option value="pct-desc">Success Rate (High → Low)</option>
+            <option value="pct-asc">Success Rate (Low → High)</option>
+            <option value="attempts-desc">Attempts (High → Low)</option>
+            <option value="attempts-asc">Attempts (Low → High)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Stats Bar -->
+      <div id="stats-bar" class="flex flex-wrap items-center gap-4 text-xs text-slate-400 font-medium bg-[#0e1220] border border-[#192239] rounded-lg px-4 py-2.5" aria-live="polite" aria-atomic="true">
+        <span id="results-count" class="text-white font-bold">{totalRecords}</span> Total records
+        <span class="text-slate-600">·</span>
+        <span id="results-summary">Type a query to begin searching</span>
+      </div>
+
+      <!-- Results Table -->
+      <div class="overflow-x-auto border border-[#192239] rounded-xl bg-[#0c0f17]">
+        <table class="w-full text-xs" id="results-table">
+          <thead>
+            <tr class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-[#192239] bg-[#0e1220]">
+              <th class="py-3 px-5 w-10">Type</th>
+              <th class="py-3 px-5">ID</th>
+              <th class="py-3 px-5">Name / Location</th>
+              <th class="py-3 px-5">Detail</th>
+              <th class="py-3 px-5">Drone / Address</th>
+              <th class="py-3 px-5">Status</th>
+              <th class="py-3 px-5 text-right">Metric</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center">
+          <Search class="w-10 h-10 text-slate-600 mb-3" />
+          <p class="text-sm font-semibold text-slate-400" id="empty-message">No results found</p>
+          <p class="text-xs text-slate-500 mt-1" id="empty-hint">Try adjusting your search query or filters</p>
+        </div>
+        <div id="initial-state" class="flex flex-col items-center justify-center py-16 text-center">
+          <Sparkles class="w-10 h-10 text-slate-600 mb-3" />
+          <p class="text-sm font-semibold text-slate-400">Search across {totalRecords} records</p>
+          <p class="text-xs text-slate-500 mt-1">Type in the search bar above to find drones and deliveries</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination-bar" class="hidden items-center justify-between text-xs text-slate-400 font-semibold bg-[#0e1220] border border-[#192239] rounded-lg p-4">
+        <span id="pagination-indicator">Page <strong class="text-white" id="page-current">1</strong> of <strong class="text-white" id="page-total">1</strong></span>
+        <div class="flex gap-2">
+          <button id="prev-page-btn" class="px-3 py-2.5 min-h-[44px] bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Prev</button>
+          <button id="next-page-btn" class="px-3 py-2.5 min-h-[44px] bg-[#161d31] hover:bg-[#1a233b] hover:text-white rounded border border-[#212c49] text-slate-400 cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Next</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- DETAIL DRAWER (right side) -->
+    <Drawer id="detail-drawer" title="Record Detail">
+      <p class="text-xs text-slate-500 text-center py-12">Click a row to see full details</p>
+    </Drawer>
+
+    <!-- Mobile overlay for detail drawer -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden transition-opacity duration-300" aria-hidden="true"></div>
+  </div>
+</Layout>
+
+<!-- Search Application -->
+<script define:vars={{ records: JSON.stringify(allRecords) }}>
+  (() => {
+    const ALL_RECORDS = JSON.parse(records);
+
+    // ── DOM refs ──
+    const searchInput = document.getElementById("search-input");
+    const clearBtn = document.getElementById("clear-search-btn");
+    const sortSelect = document.getElementById("sort-select");
+    const resultsBody = document.getElementById("results-body");
+    const resultsTable = document.getElementById("results-table");
+    const emptyState = document.getElementById("empty-state");
+    const initialState = document.getElementById("initial-state");
+    const statsBar = document.getElementById("stats-bar");
+    const resultsCount = document.getElementById("results-count");
+    const resultsSummary = document.getElementById("results-summary");
+    const paginationBar = document.getElementById("pagination-bar");
+    const pageCurrent = document.getElementById("page-current");
+    const pageTotal = document.getElementById("page-total");
+    const prevPageBtn = document.getElementById("prev-page-btn");
+    const nextPageBtn = document.getElementById("next-page-btn");
+
+    // ── State ──
+    let query = "";
+    let typeFilter = "all";
+    let statusFilter = "all";
+    let sortMode = "relevance";
+    let currentPage = 1;
+    const ITEMS_PER_PAGE = 10;
+
+    // ── Read URL params on load ──
+    function readUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q") || "";
+      const t = params.get("type") || "all";
+      const s = params.get("status") || "all";
+      const sort = params.get("sort") || "relevance";
+      if (q) searchInput.value = q;
+      query = q;
+      typeFilter = t;
+      statusFilter = s;
+      sortMode = sort;
+      sortSelect.value = sort;
+
+      // Sync filter chips
+      document.querySelectorAll(".type-chip").forEach((btn) => {
+        const val = btn.getAttribute("data-value");
+        toggleChip(btn, val === t);
+      });
+      document.querySelectorAll(".status-chip").forEach((btn) => {
+        const val = btn.getAttribute("data-value");
+        toggleChip(btn, val === s);
+      });
+
+      if (q || t !== "all" || s !== "all") {
+        applyAll();
+      }
+    }
+
+    // ── Update URL ──
+    function updateUrl() {
+      const params = new URLSearchParams();
+      if (query) params.set("q", query);
+      if (typeFilter !== "all") params.set("type", typeFilter);
+      if (statusFilter !== "all") params.set("status", statusFilter);
+      if (sortMode !== "relevance") params.set("sort", sortMode);
+      const newUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      window.history.replaceState(null, "", newUrl);
+    }
+
+    // ── Filter ──
+    function filterRecords() {
+      const q = query.toLowerCase().trim();
+      let results = ALL_RECORDS.slice();
+
+      // Type filter
+      if (typeFilter !== "all") {
+        results = results.filter((r) => r._type === typeFilter);
+      }
+
+      // Status filter
+      if (statusFilter !== "all") {
+        results = results.filter((r) => r.status === statusFilter);
+      }
+
+      // Text search — pure substring AND matching across all terms
+      if (q) {
+        const terms = q.split(/\s+/);
+        results = results.filter((r) => {
+          return terms.every((term) => r._searchText.includes(term));
+        });
+      }
+
+      return results;
+    }
+
+    // ── Sort ──
+    function sortRecords(records) {
+      const mode = sortMode;
+      if (mode === "relevance") return records; // preserve filter order
+
+      const sorted = records.slice();
+      sorted.sort((a, b) => {
+        let cmp = 0;
+        switch (mode) {
+          case "id-asc": cmp = a.id.localeCompare(b.id); break;
+          case "id-desc": cmp = b.id.localeCompare(a.id); break;
+          case "status-asc": cmp = a.status.localeCompare(b.status); break;
+          case "status-desc": cmp = b.status.localeCompare(a.status); break;
+          case "pct-desc": cmp = (b.pct || 0) - (a.pct || 0); break;
+          case "pct-asc": cmp = (a.pct || 0) - (b.pct || 0); break;
+          case "attempts-desc": cmp = (b.attempts || 0) - (a.attempts || 0); break;
+          case "attempts-asc": cmp = (a.attempts || 0) - (b.attempts || 0); break;
+          default: cmp = 0;
+        }
+        return cmp;
+      });
+      return sorted;
+    }
+
+    // ── Render ──
+    function render(results) {
+      const total = results.length;
+      const totalPages = Math.ceil(total / ITEMS_PER_PAGE) || 1;
+
+      // Clamp page
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+      const pageItems = results.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+      // Show/hide states
+      const hasQuery = query.trim().length > 0;
+      const hasFilters = typeFilter !== "all" || statusFilter !== "all";
+      const isSearching = hasQuery || hasFilters;
+
+      if (!isSearching && total === ALL_RECORDS.length) {
+        // Initial state
+        resultsTable.classList.add("hidden");
+        emptyState.classList.add("hidden");
+        initialState.classList.remove("hidden");
+        paginationBar.classList.add("hidden");
+        statsBar.querySelector("span").textContent = ALL_RECORDS.length + " Total records";
+        resultsSummary.textContent = "Type a query to begin searching";
+      } else if (total === 0) {
+        // Empty — show what was searched for so the user can self-correct
+        resultsTable.classList.add("hidden");
+        initialState.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        paginationBar.classList.add("hidden");
+        resultsCount.textContent = "0";
+
+        // Build a descriptive summary of the active search
+        const parts = [];
+        if (query.trim()) parts.push("\u201C" + query.trim() + "\u201D");
+        if (typeFilter !== "all") parts.push("type: " + typeFilter);
+        if (statusFilter !== "all") parts.push("status: " + statusFilter);
+        const searchDesc = parts.join(" + ");
+
+        const emptyMsg = document.getElementById("empty-message");
+        if (emptyMsg) {
+          emptyMsg.textContent = "No results for " + searchDesc;
+        }
+        const emptyHint = document.getElementById("empty-hint");
+        if (emptyHint) {
+          if (typeFilter !== "all" || statusFilter !== "all") {
+            emptyHint.textContent = "Try removing filters or broadening your query.";
+          } else {
+            emptyHint.textContent = "Check for typos, or try a shorter query to see what\u2019s available.";
+          }
+        }
+        resultsSummary.textContent = "0 matching records";
+      } else {
+        // Results
+        resultsTable.classList.remove("hidden");
+        initialState.classList.add("hidden");
+        emptyState.classList.add("hidden");
+        paginationBar.classList.remove("hidden");
+
+        resultsCount.textContent = String(total);
+        resultsSummary.textContent = total === 1 ? "1 matching record" : total + " matching records";
+        pageCurrent.textContent = String(currentPage);
+        pageTotal.textContent = String(totalPages);
+        prevPageBtn.disabled = currentPage <= 1;
+        nextPageBtn.disabled = currentPage >= totalPages;
+
+        // Build rows
+        let html = "";
+        pageItems.forEach((r) => {
+          if (r._type === "drone") {
+            const pctClass = r.pct >= 95 ? "text-[#10b981]" : r.pct >= 90 ? "text-blue-400" : "text-amber-400";
+            const statusClass =
+              r.status === "IN-TRANSIT" ? "bg-blue-500/10 border-blue-500/20 text-blue-400" :
+              r.status === "MAINTENANCE" ? "bg-rose-500/10 border-rose-500/20 text-rose-400" :
+              "bg-slate-500/10 border-slate-500/25 text-slate-400";
+            html += `<tr class="border-b border-[#192239]/60 hover:bg-[#111625]/50 transition-colors cursor-pointer" data-id="${esc(r.id)}" data-type="${r._type}">
+              <td class="py-3 px-5" data-label="Type"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Drone</span></td>
+              <td class="py-3 px-5 font-mono text-xs font-bold text-slate-200" data-label="ID">${esc(r.id)}</td>
+              <td class="py-3 px-5 text-slate-300 font-medium" data-label="Name / Location">${esc(r.location)}</td>
+              <td class="py-3 px-5 text-slate-500 text-[11px]" data-label="Detail">—</td>
+              <td class="py-3 px-5 text-slate-500 text-[11px]" data-label="Drone / Address">—</td>
+              <td class="py-3 px-5" data-label="Status"><div class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-[11px] font-bold uppercase tracking-wider border ${statusClass}"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${r.status === 'IN-TRANSIT' ? 'bg-blue-400' : r.status === 'MAINTENANCE' ? 'bg-rose-400' : 'bg-slate-400'}"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 ${r.status === 'IN-TRANSIT' ? 'bg-blue-500' : r.status === 'MAINTENANCE' ? 'bg-rose-500' : 'bg-slate-500'}"></span></span>${esc(titleCase(r.status))}</div></td>
+              <td class="py-3 px-5 text-right" data-label="Metric"><span class="font-mono text-xs font-bold ${pctClass}">${r.pct}%</span> <span class="text-[11px] text-slate-500">(${r.success}/${r.attempts})</span></td>
+            </tr>`;
+          } else {
+            const statusClass =
+              r.status === "IN TRANSIT" ? "bg-blue-500/10 border-blue-500/20 text-blue-400" :
+              r.status === "DELAYED" ? "bg-amber-500/10 border-amber-500/20 text-amber-400" :
+              r.status === "FINAL APPROACH" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" :
+              "bg-slate-500/10 border-slate-500/25 text-slate-400";
+            html += `<tr class="border-b border-[#192239]/60 hover:bg-[#111625]/50 transition-colors cursor-pointer" data-id="${esc(r.id)}" data-type="${r._type}">
+              <td class="py-3 px-5" data-label="Type"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">Delivery</span></td>
+              <td class="py-3 px-5 font-mono text-xs font-bold text-slate-200" data-label="ID">${esc(r.id)}</td>
+              <td class="py-3 px-5 text-slate-300 font-medium" data-label="Name / Location">${esc(r.address)}</td>
+              <td class="py-3 px-5 text-slate-400 text-[11px]" data-label="Detail">${esc(r.addressDetail)}</td>
+              <td class="py-3 px-5 font-mono text-xs text-slate-300" data-label="Drone / Address">${esc(r.drone)}</td>
+              <td class="py-3 px-5" data-label="Status"><div class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-[11px] font-bold uppercase tracking-wider border ${statusClass}">${esc(titleCase(r.status))}</div></td>
+              <td class="py-3 px-5 text-right font-mono text-xs font-bold text-slate-300" data-label="Metric">ETA ${esc(r.eta)} <span class="text-[11px] text-slate-500 font-normal">${esc(r.etaDetail)}</span></td>
+            </tr>`;
+          }
+        });
+        resultsBody.innerHTML = html;
+      }
+
+      // Clear button visibility
+      if (query) {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+    }
+
+    const esc = (s) => {
+      if (!s) return "";
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    };
+
+    const titleCase = (s) => {
+      if (!s) return "";
+      return String(s).toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    };
+
+    // ── Apply all ──
+    function applyAll() {
+      const filtered = filterRecords();
+      const sorted = sortRecords(filtered);
+      updateUrl();
+      render(sorted);
+    }
+
+    // ── Chip helpers ──
+    const toggleChip = (btn, active) => {
+      btn.setAttribute("aria-pressed", String(active));
+      if (active) {
+        btn.classList.add("active", "bg-blue-500/15", "border-blue-500/30", "text-blue-400");
+        btn.classList.remove("bg-transparent", "border-[#1b253b]", "text-slate-400");
+      } else {
+        btn.classList.remove("active", "bg-blue-500/15", "border-blue-500/30", "text-blue-400");
+        btn.classList.add("bg-transparent", "border-[#1b253b]", "text-slate-400");
+      }
+    };
+
+    // ── Event: search input ──
+    let debounceTimer;
+    searchInput.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        query = searchInput.value;
+        currentPage = 1;
+        applyAll();
+      }, 200);
+    });
+
+    // ── Event: keyboard shortcuts on search input ──
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        searchInput.value = "";
+        query = "";
+        currentPage = 1;
+        applyAll();
+      }
+      if (e.key === "Enter") {
+        // Re-apply the current query so the URL updates and results refresh
+        query = searchInput.value;
+        currentPage = 1;
+        applyAll();
+      }
+    });
+
+    // ── Event: clear button ──
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      query = "";
+      currentPage = 1;
+      applyAll();
+      searchInput.focus();
+    });
+
+    // ── Event: type filter chips ──
+    document.querySelectorAll(".type-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".type-chip").forEach((b) => toggleChip(b, false));
+        toggleChip(btn, true);
+        typeFilter = btn.getAttribute("data-value") || "all";
+        currentPage = 1;
+        applyAll();
+      });
+    });
+
+    // ── Event: status filter chips ──
+    document.querySelectorAll(".status-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".status-chip").forEach((b) => toggleChip(b, false));
+        toggleChip(btn, true);
+        statusFilter = btn.getAttribute("data-value") || "all";
+        currentPage = 1;
+        applyAll();
+      });
+    });
+
+    // ── Event: sort select ──
+    sortSelect.addEventListener("change", () => {
+      sortMode = sortSelect.value;
+      currentPage = 1;
+      applyAll();
+    });
+
+    // ── Event: pagination ──
+    prevPageBtn.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        applyAll();
+      }
+    });
+    nextPageBtn.addEventListener("click", () => {
+      const filtered = filterRecords();
+      const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+      if (currentPage < totalPages) {
+        currentPage++;
+        applyAll();
+      }
+    });
+
+    // ── Keyboard shortcut: "/" focuses search ──
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement !== searchInput && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA" && document.activeElement?.tagName !== "SELECT") {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    });
+
+    // ── Detail Drawer ──
+    const drawer = document.getElementById("detail-drawer");
+    const drawerOverlay = document.getElementById("drawer-overlay");
+    const drawerTitle = document.getElementById("detail-drawer-title");
+    const drawerBody = document.getElementById("detail-drawer-body");
+    const closeDrawerBtn = document.getElementById("detail-drawer-close");
+
+    function openDrawer(record) {
+      if (!drawer || !drawerBody || !drawerTitle) return;
+      if (!record || !record._type) { drawerBody.innerHTML = '<p class="text-xs text-slate-500 text-center py-12">No record data available.</p>'; return; }
+
+      const isDrone = record._type === "drone";
+      drawerTitle.textContent = isDrone ? record.id : record.id;
+
+      drawer.style.display = "flex";
+
+      let html = "";
+      if (isDrone) {
+        const statusColor =
+          record.status === "IN-TRANSIT" ? "blue" :
+          record.status === "MAINTENANCE" ? "rose" : "slate";
+        const pctColor =
+          record.pct >= 95 ? "#10b981" : record.pct >= 90 ? "#60a5fa" : "#f59e0b";
+
+        html += `<div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Drone</span>
+          <span class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-[11px] font-bold uppercase tracking-wider border bg-${statusColor}-500/10 border-${statusColor}-500/20 text-${statusColor}-400">${esc(titleCase(record.status))}</span>
+        </div>`;
+
+        html += `<div class="space-y-3">`;
+        html += detailRow("ID", record.id, true);
+        html += detailRow("Location", record.location);
+        html += detailRow("Status", record.status);
+        html += detailRow("Total Attempts", String(record.attempts));
+        html += detailRow("Successful", String(record.success));
+        html += detailRow("Success Rate", record.pct + "%", false, pctColor);
+        html += `</div>`;
+
+        // Progress bar
+        html += `<div class="mt-4 pt-4 border-t border-[#192239]">
+          <div class="flex justify-between text-[11px] text-slate-400 font-medium mb-1.5">
+            <span>Success Rate</span>
+            <span style="color:${pctColor}" class="font-bold">${record.pct}%</span>
+          </div>
+          <div class="w-full h-1.5 bg-[#172033] rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style="width:${record.pct}%; background:${pctColor}"></div>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1.5">${record.success} of ${record.attempts} attempts successful</p>
+        </div>`;
+      } else {
+        const statusColor =
+          record.status === "IN TRANSIT" ? "blue" :
+          record.status === "DELAYED" ? "amber" :
+          record.status === "FINAL APPROACH" ? "emerald" : "slate";
+
+        html += `<div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">Delivery</span>
+          <span class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-[11px] font-bold uppercase tracking-wider border bg-${statusColor}-500/10 border-${statusColor}-500/20 text-${statusColor}-400">${esc(titleCase(record.status))}</span>
+        </div>`;
+
+        html += `<div class="space-y-3">`;
+        html += detailRow("Delivery ID", record.id, true);
+        html += detailRow("Address", record.address);
+        html += detailRow("Detail", record.addressDetail);
+        html += detailRow("Assigned Drone", record.drone, true);
+        html += detailRow("Status", record.status);
+        html += detailRow("ETA", record.eta);
+        html += detailRow("ETA Detail", record.etaDetail);
+        html += detailRow("Type", record.deliveryType);
+        html += `</div>`;
+      }
+
+      drawerBody.innerHTML = html;
+
+      // Mobile overlay
+      if (drawerOverlay && window.innerWidth < 1024) {
+        drawerOverlay.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function detailRow(label, value, mono, color) {
+      const valClass = mono ? "font-mono text-slate-200" : "text-slate-200";
+      const valStyle = color ? ` style="color:${color}"` : "";
+      return `<div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">${label}</span>
+        <span class="text-xs font-medium text-right ${valClass}"${valStyle}>${esc(String(value))}</span>
+      </div>`;
+    }
+
+    function closeDrawer() {
+      if (!drawer) return;
+      drawer.style.display = "none";
+      if (drawerOverlay) {
+        drawerOverlay.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+    }
+
+    // Click delegation on table body
+    resultsBody.addEventListener("click", (e) => {
+      const row = e.target.closest("tr[data-id][data-type]");
+      if (!row) return;
+
+      const id = row.getAttribute("data-id");
+      const type = row.getAttribute("data-type");
+      const record = ALL_RECORDS.find((r) => r._type === type && r.id === id);
+      if (!record) return;
+
+      // Highlight selected row
+      resultsBody.querySelectorAll("tr.bg-blue-950\\/30").forEach((r) => {
+        r.classList.remove("bg-blue-950/30", "border-l-2", "border-blue-500");
+      });
+      row.classList.add("bg-blue-950/30", "border-l-2", "border-blue-500");
+
+      openDrawer(record);
+    });
+
+    // Close handled by Drawer component inline onclick
+
+    // Overlay click
+    if (drawerOverlay) {
+      drawerOverlay.addEventListener("click", closeDrawer);
+    }
+
+    // Escape key closes drawer
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && drawer && drawer.style.display !== "none") {
+        closeDrawer();
+      }
+    });
+
+
+
+    // ── Init ──
+    readUrlParams();
+  })();
+</script>
+
+<style>
+  .filter-chip.active {
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+  }
+
+  /* Responsive card-stack table on phone (< 640px) — WCAG 1.4.10 Reflow */
+  @media (max-width: 639px) {
+    #results-table thead { display: none; }
+    #results-table, #results-table tbody, #results-table tr, #results-table td { display: block; }
+    #results-table tr {
+      margin-bottom: 1rem;
+      border: 1px solid #192239;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      background: #0c0f17;
+    }
+    #results-table td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border: none;
+      text-align: right;
+    }
+    #results-table td::before {
+      content: attr(data-label);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: #64748b;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      margin-right: 1rem;
+    }
+    #results-table td[data-label="Type"],
+    #results-table td[data-label="Status"],
+    #results-table td[data-label="Metric"] {
+      align-items: center;
+    }
+  }
+</style>

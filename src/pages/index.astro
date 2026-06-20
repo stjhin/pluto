@@ -1,10 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import SearchBar from "../components/SearchBar.astro";
+import Drawer from "../components/Drawer.astro";
+import PageTitle from "../components/PageTitle.astro";
+import HeaderUtilityIcons from "../components/HeaderUtilityIcons.astro";
 import {
   Rocket,
   Package,
   TrendingUp,
-  Settings,
   Search,
   HelpCircle,
   Sparkles,
@@ -89,100 +93,7 @@ const failedLogs = [
 
 <Layout title="PLUTO Fleet Command | Drones">
   <div class="flex h-screen overflow-hidden bg-[#0a0d16] relative">
-    <!-- LEFT SIDEBAR -->
-    <aside
-      class="mobile-sidebar hidden lg:flex w-64 bg-[#0e1220] border-r border-[#192239] flex-col justify-between shrink-0 fixed lg:relative inset-y-0 left-0 z-40 shadow-2xl lg:shadow-none"
-    >
-      <div>
-        <!-- Brand / Identity -->
-        <div class="p-6 border-b border-[#192239]">
-          <div class="flex items-center gap-2.5 justify-between">
-            <div class="flex items-center gap-2.5">
-            <div
-              class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20"
-            >
-              P
-            </div>
-            <div>
-              <h1
-                class="text-xs uppercase font-extrabold tracking-widest text-blue-400"
-              >
-                Pluto
-              </h1>
-              <p
-                class="text-[10px] font-medium text-slate-500 uppercase tracking-wider"
-              >
-                Fleet Command
-              </p>
-            </div>
-            </div>
-            <!-- Mobile close button -->
-            <button id="mobile-menu-close" class="lg:hidden p-1 text-slate-400 hover:text-white -mr-1" aria-label="Close menu">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Navigation Links -->
-        <nav class="p-4 space-y-1">
-          <a
-            href="/pluto/"
-            class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 bg-[#171f34] border-l-2 border-blue-500 rounded-r-md transition-all"
-          >
-            <Rocket class="w-[18px] h-[18px] text-blue-400" />
-            Drones
-          </a>
-          <a
-            href="/pluto/deliveries"
-            class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group"
-          >
-            <Package
-              class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400"
-            />
-            Deliveries
-          </a>
-          <a
-            href="/pluto/analytics"
-            class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group"
-          >
-            <TrendingUp
-              class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400"
-            />
-            Analytics
-          </a>
-          <a
-            href="#"
-            class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group"
-          >
-            <Settings
-              class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400"
-            />
-            Settings
-          </a>
-        </nav>
-      </div>
-
-      <!-- User Profile (Bottom of Sidebar) -->
-      <div class="p-4 border-t border-[#192239] bg-[#0c0f1b]">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-lg bg-[#11182c] border border-blue-500/20 text-blue-400 flex items-center justify-center font-bold shadow-inner"
-          >
-            JB
-          </div>
-          <div class="overflow-hidden">
-            <p class="text-xs font-semibold text-slate-200 truncate">
-              Justin Beckenbaur
-            </p>
-            <p class="text-[10px] text-slate-500 uppercase tracking-tight">
-              System Admin
-            </p>
-          </div>
-        </div>
-      </div>
-    </aside>
+    <Navigation activePage="drones" />
 
     <!-- MAIN BODY SECTION & RIGHT LOGS -->
     <div class="flex flex-1 overflow-hidden">
@@ -216,30 +127,16 @@ const failedLogs = [
           </div>
           </div>
 
-          <!-- Search Bar -->
-          <div class="relative w-full lg:w-80">
-            <Search
-              class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
-            />
-            <input
-              type="text"
-              placeholder="Search drone ID, coordinates, status..."
-              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2 pl-10 pr-4 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
-            />
+          <div class="w-full lg:w-80">
+            <SearchBar placeholder="Search drone ID, coordinates, status..." />
           </div>
+
+          <HeaderUtilityIcons />
         </div>
 
-        <!-- Title Block -->
-        <div>
-          <h2
-            class="text-2xl font-extrabold tracking-tight text-white mb-1.5 flex items-center gap-2"
-          >
-            Drones
-          </h2>
-          <p class="text-sm font-medium text-slate-400">
-            Tactical overview of active drones and mission efficiency metrics
-          </p>
-        </div>
+        <PageTitle description="Tactical overview of active drones and mission efficiency metrics">
+          <Rocket class="w-6 h-6 text-blue-400" /> Drones
+        </PageTitle>
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
@@ -278,7 +175,7 @@ const failedLogs = [
             >
               <div class="flex-1 min-w-0">
                 <!-- Bar Visualization -->
-                <div class="flex justify-between text-[11px] mb-1.5">
+                <div class="flex justify-between text-xs mb-1.5">
                   <span class="text-slate-400 font-medium"
                     >Mission Goal Progress</span
                   >
@@ -298,7 +195,7 @@ const failedLogs = [
                 class="flex items-center gap-1.5 shrink-0 text-[#10b981] font-bold text-xs"
               >
                 <span>+12%</span>
-                <span class="text-[10px] text-slate-500 font-medium font-sans"
+                <span class="text-[11px] text-slate-500 font-medium font-sans"
                   >MoM</span
                 >
               </div>
@@ -342,7 +239,7 @@ const failedLogs = [
             >
               <div class="flex-1 min-w-0">
                 <!-- Bar Visualization -->
-                <div class="flex justify-between text-[11px] mb-1.5">
+                <div class="flex justify-between text-xs mb-1.5">
                   <span class="text-slate-400 font-medium">Status</span>
                   <span class="text-[#10b981] font-semibold"
                     >Stable Fleet Operations</span
@@ -365,7 +262,7 @@ const failedLogs = [
                   class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"
                 ></span>
                 <span
-                  class="text-[10px] text-[#10b981] font-bold uppercase tracking-wider"
+                  class="text-[11px] text-[#10b981] font-bold uppercase tracking-wider"
                   >Stable</span
                 >
               </div>
@@ -406,23 +303,23 @@ const failedLogs = [
               <thead>
                 <tr class="border-b border-[#172036] bg-[#0c101d]/60">
                   <th
-                    class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase"
+                    class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase"
                     >Drone ID</th
                   >
                   <th
-                    class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase"
+                    class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase"
                     >Location</th
                   >
                   <th
-                    class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase"
+                    class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase"
                     >Status</th
                   >
                   <th
-                    class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase text-center"
+                    class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase text-center"
                     >Attempts</th
                   >
                   <th
-                    class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase text-center"
+                    class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase text-center"
                     >Success Rate</th
                   >
                 </tr>
@@ -431,8 +328,14 @@ const failedLogs = [
                 {
                   drones.map((drone, idx) => (
                     <tr
-                      class={`hover:bg-[#121827]/70 transition-colors group drone-row ${idx >= 7 ? "hidden" : ""}`}
+                      class={`hover:bg-[#121827]/70 transition-colors group drone-row cursor-pointer ${idx >= 7 ? "hidden" : ""}`}
                       data-index={idx}
+                      data-id={drone.id}
+                      data-location={drone.location}
+                      data-status={drone.status}
+                      data-attempts={drone.attempts}
+                      data-success={drone.success}
+                      data-pct={drone.pct}
                     >
                       <td class="py-3.5 px-5 font-mono text-xs font-bold text-slate-200 group-hover:text-blue-400 transition-colors">
                         {drone.id}
@@ -443,19 +346,19 @@ const failedLogs = [
                       </td>
                       <td class="py-3.5 px-5">
                         {drone.status === "IN-TRANSIT" && (
-                          <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-blue-500/10 border border-blue-500/20 rounded-md text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                          <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-blue-500/10 border border-blue-500/20 rounded-md text-[11px] font-bold text-blue-400 uppercase tracking-wider">
                             <CircleDot class="w-3 h-3 animate-pulse" />
                             In-Transit
                           </div>
                         )}
                         {drone.status === "IDLE" && (
-                          <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-slate-500/10 border border-slate-500/25 rounded-md text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                          <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-slate-500/10 border border-slate-500/25 rounded-md text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                             <CircleDot class="w-3 h-3" />
                             Idle
                           </div>
                         )}
                         {drone.status === "MAINTENANCE" && (
-                          <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-rose-500/10 border border-rose-500/20 rounded-md text-[10px] font-bold text-rose-400 uppercase tracking-wider">
+                          <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-rose-500/10 border border-rose-500/20 rounded-md text-[11px] font-bold text-rose-400 uppercase tracking-wider">
                             <CircleDot class="w-3 h-3" />
                             Maintenance
                           </div>
@@ -471,7 +374,7 @@ const failedLogs = [
                           >
                             {drone.pct}%
                           </span>
-                          <span class="text-[10px] text-slate-500 font-sans font-medium">
+                          <span class="text-[11px] text-slate-500 font-sans font-medium">
                             ({drone.success}/{drone.attempts})
                           </span>
                         </div>
@@ -595,129 +498,107 @@ const failedLogs = [
         </div>
       </main>
 
-      <!-- RIGHT SIDEBAR (Delivery Logs) -->
-      <aside
-        id="delivery-logs-drawer"
-        class="hidden lg:flex w-80 lg:w-96 bg-[#0e1220] flex-col shrink-0 border-l border-[#192239] transition-all duration-300 fixed lg:relative right-0 inset-y-0 z-50 shadow-2xl lg:shadow-none"
-      >
-        <!-- Tabbed Header -->
-        <div class="p-6 border-b border-[#192239]">
-          <div class="flex justify-between items-center mb-6">
-            <h3 class="text-md font-extrabold text-white tracking-wide">
-              Delivery Logs
-            </h3>
-            <button
-              id="close-drawer-btn"
-              class="p-1 bg-[#171f34] text-slate-400 hover:text-white rounded transition-colors cursor-pointer"
-            >
-              <X class="w-4 h-4" />
-            </button>
-          </div>
-
-          <!-- Category Tabs -->
-          <div class="flex border-b border-[#172036]">
-            <button
-              id="success-tab-btn"
-              class="flex-1 pb-3 text-center border-b-2 border-blue-500 text-xs font-bold text-white transition-all cursor-pointer"
-            >
-              Successful
-            </button>
-            <button
-              id="failed-tab-btn"
-              class="flex-1 pb-3 text-center border-b-2 border-transparent text-xs font-medium text-slate-500 hover:text-slate-400 transition-all cursor-pointer"
-            >
-              Failed
-            </button>
-          </div>
+      <Drawer id="delivery-logs-drawer" title="Delivery Logs" visible={true}>
+        <!-- Category Tabs -->
+        <div class="flex border-b border-[#172036] -mt-2">
+          <button
+            id="success-tab-btn"
+            class="flex-1 pb-3 text-center border-b-2 border-blue-500 text-xs font-bold text-white transition-all cursor-pointer"
+          >
+            Successful
+          </button>
+          <button
+            id="failed-tab-btn"
+            class="flex-1 pb-3 text-center border-b-2 border-transparent text-xs font-medium text-slate-500 hover:text-slate-400 transition-all cursor-pointer"
+          >
+            Failed
+          </button>
         </div>
 
-        <!-- Log List Scroll Container -->
-        <div class="flex-1 overflow-y-auto p-6 space-y-4">
-          <!-- SUCCESS LOGS -->
-          <div id="success-logs-container" class="space-y-4">
-            {
-              deliveryLogs.map((log) => (
-                <div class="p-4 bg-[#121828] border border-[#1f2a46]/50 rounded-lg space-y-3 hover:border-blue-500/20 transition-all duration-300">
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                      <div class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20">
-                        <CheckCircle2 class="w-3.5 h-3.5" />
-                      </div>
-                      <span class="font-mono text-xs font-bold text-slate-200">
-                        {log.id} Delivered
-                      </span>
+        <!-- SUCCESS LOGS -->
+        <div id="success-logs-container" class="space-y-4">
+          {
+            deliveryLogs.map((log) => (
+              <div class="p-4 bg-[#121828] border border-[#1f2a46]/50 rounded-lg space-y-3 hover:border-blue-500/20 transition-all duration-300">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20">
+                      <CheckCircle2 class="w-3.5 h-3.5" />
                     </div>
-                    <span class="font-mono text-[9px] font-semibold text-slate-500 uppercase tracking-tight">
-                      {log.time}
+                    <span class="font-mono text-xs font-bold text-slate-200">
+                      {log.id} Delivered
                     </span>
                   </div>
-                  <p class="text-xs text-slate-400 font-medium leading-normal pl-7 flex items-start gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 bg-slate-600 rounded-full mt-1.5 shrink-0" />
-                    {log.address}
-                  </p>
+                  <span class="font-mono text-[10px] font-semibold text-slate-500 uppercase tracking-tight">
+                    {log.time}
+                  </span>
                 </div>
-              ))
-            }
-          </div>
+                <p class="text-xs text-slate-400 font-medium leading-normal pl-7 flex items-start gap-1.5">
+                  <span class="inline-block w-1.5 h-1.5 bg-slate-600 rounded-full mt-1.5 shrink-0" />
+                  {log.address}
+                </p>
+              </div>
+            ))
+          }
+        </div>
 
-          <!-- FAILED LOGS (Hidden initially) -->
-          <div id="failed-logs-container" class="space-y-4 hidden">
-            {
-              failedLogs.map((log) => (
-                <div class="p-4 bg-[#121828] border border-rose-500/20 rounded-lg space-y-3 hover:border-rose-500/30 transition-all duration-300">
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                      <div class="p-1.5 bg-rose-500/10 text-rose-400 rounded-md border border-rose-500/20">
-                        <X class="w-3.5 h-3.5" />
-                      </div>
-                      <span class="font-mono text-xs font-bold text-slate-200">
-                        {log.id} Offline / Aborted
-                      </span>
+        <!-- FAILED LOGS (Hidden initially) -->
+        <div id="failed-logs-container" class="space-y-4 hidden">
+          {
+            failedLogs.map((log) => (
+              <div class="p-4 bg-[#121828] border border-rose-500/20 rounded-lg space-y-3 hover:border-rose-500/30 transition-all duration-300">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="p-1.5 bg-rose-500/10 text-rose-400 rounded-md border border-rose-500/20">
+                      <X class="w-3.5 h-3.5" />
                     </div>
-                    <span class="font-mono text-[9px] font-semibold text-rose-500/70 uppercase tracking-tight">
-                      {log.time}
+                    <span class="font-mono text-xs font-bold text-slate-200">
+                      {log.id} Offline / Aborted
                     </span>
                   </div>
-                  <p class="text-xs text-slate-400 font-medium leading-normal pl-7 flex items-start gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 bg-rose-600 rounded-full mt-1.5 shrink-0" />
-                    {log.address}
-                  </p>
+                  <span class="font-mono text-[10px] font-semibold text-rose-500/70 uppercase tracking-tight">
+                    {log.time}
+                  </span>
                 </div>
-              ))
-            }
-          </div>
+                <p class="text-xs text-slate-400 font-medium leading-normal pl-7 flex items-start gap-1.5">
+                  <span class="inline-block w-1.5 h-1.5 bg-rose-600 rounded-full mt-1.5 shrink-0" />
+                  {log.address}
+                </p>
+              </div>
+            ))
+          }
+        </div>
 
-          <!-- Metric Summary Block inside Logs Panel -->
-          <div class="border-t border-[#1a233b] pt-6 mt-6 space-y-4">
-            <h4
-              class="text-[10px] font-bold text-slate-400 tracking-wider uppercase"
-            >
-              Metric Summary
-            </h4>
+        <!-- Metric Summary Block -->
+        <div class="border-t border-[#1a233b] pt-6 mt-6 space-y-4">
+          <h4
+            class="text-[11px] font-bold text-slate-400 tracking-wider uppercase"
+          >
+            Metric Summary
+          </h4>
 
-            <div class="space-y-3.5">
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-slate-400 font-medium"
-                  >Avg. Delivery Time</span
-                >
-                <span class="text-white font-bold font-mono">14m 22s</span>
-              </div>
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-slate-400 font-medium"
-                  >Battery Efficiency</span
-                >
-                <span class="text-emerald-400 font-bold font-mono">92%</span>
-              </div>
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-slate-400 font-medium">Signal Strength</span>
-                <span class="text-white font-bold font-mono">-42 dBm</span>
-              </div>
+          <div class="space-y-3.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400 font-medium"
+                >Avg. Delivery Time</span
+              >
+              <span class="text-white font-bold font-mono">14m 22s</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400 font-medium"
+                >Battery Efficiency</span
+              >
+              <span class="text-emerald-400 font-bold font-mono">92%</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400 font-medium">Signal Strength</span>
+              <span class="text-white font-bold font-mono">-42 dBm</span>
             </div>
           </div>
         </div>
 
-        <!-- Footer / Action Area -->
-        <div class="p-6 border-t border-[#192239] bg-[#0c0f1b]">
+        <!-- Export Button -->
+        <div class="pt-4">
           <button
             class="w-full py-3 bg-[#3b82f6] hover:bg-blue-600 text-white font-bold text-xs rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 transition-colors"
           >
@@ -725,195 +606,226 @@ const failedLogs = [
             Export Full Log
           </button>
         </div>
-      </aside>
+      </Drawer>
+      <Drawer id="drone-detail-drawer" title="Drone Details">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Drone</span>
+          <span id="drone-detail-status-badge" class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-[11px] font-bold uppercase tracking-wider border bg-blue-500/10 border-blue-500/20 text-blue-400"></span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Drone ID</span>
+            <span id="drone-detail-id" class="text-xs font-mono font-bold text-slate-200 text-right"></span>
+          </div>
+          <div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Location</span>
+            <span id="drone-detail-location" class="text-xs text-slate-200 text-right"></span>
+          </div>
+          <div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Status</span>
+            <span id="drone-detail-status" class="text-xs font-medium text-slate-200 text-right"></span>
+          </div>
+          <div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Total Attempts</span>
+            <span id="drone-detail-attempts" class="text-xs font-mono font-bold text-slate-200 text-right"></span>
+          </div>
+          <div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Successful</span>
+            <span id="drone-detail-success" class="text-xs font-mono font-bold text-slate-200 text-right"></span>
+          </div>
+          <div class="flex justify-between items-start gap-4 py-2 border-b border-[#192239]/50">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Success Rate</span>
+            <span id="drone-detail-pct" class="text-xs font-mono font-bold text-right"></span>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <div class="flex justify-between text-[11px] text-slate-400 font-medium mb-1.5">
+            <span>Success Rate</span>
+            <span id="drone-detail-pct-bar-label" class="font-bold"></span>
+          </div>
+          <div class="w-full h-1.5 bg-[#172033] rounded-full overflow-hidden">
+            <div id="drone-detail-pct-bar" class="h-full rounded-full transition-all"></div>
+          </div>
+          <p id="drone-detail-ratio" class="text-[11px] text-slate-500 mt-1.5"></p>
+        </div>
+      </Drawer>
     </div>
   </div>
+  <div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden transition-opacity duration-300" aria-hidden="true"></div>
 
-  <!-- Interactive drawer script -->
   <script>
-    const openBtn = document.getElementById("open-drawer-btn");
-    const closeBtn = document.getElementById("close-drawer-btn");
-    const drawer = document.getElementById("delivery-logs-drawer");
+    (() => {
+      // ── Delivery Logs Drawer ──
+      const openBtn = document.getElementById("open-drawer-btn");
+      const closeBtn = document.getElementById("delivery-logs-drawer-close");
+      const drawer = document.getElementById("delivery-logs-drawer");
+      const drawerOverlay = document.getElementById("drawer-overlay");
 
-    if (openBtn && closeBtn && drawer) {
-      function openDrawer() {
-        drawer.classList.remove("hidden");
-        drawer.classList.add("flex");
-        // On mobile, add overlay
-        const overlay = document.getElementById('sidebar-overlay');
-        if (overlay && window.innerWidth < 1024) {
-          overlay.classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
+      const isMobile = () => window.innerWidth < 1024;
+
+      const open = () => {
+        if (!drawer) return;
+        drawer.style.display = "flex";
+        if (isMobile()) {
+          drawerOverlay?.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
         }
-      }
+      };
 
-      function closeDrawer() {
-        drawer.classList.add("hidden");
-        drawer.classList.remove("flex");
-        const overlay = document.getElementById('sidebar-overlay');
-        if (overlay) {
-          overlay.classList.add('hidden');
-          document.body.style.overflow = '';
+      const close = () => {
+        if (!drawer) return;
+        drawer.style.display = "none";
+        if (isMobile()) {
+          drawerOverlay?.classList.add("hidden");
+          document.body.style.overflow = "";
         }
-      }
+      };
 
-      openBtn.addEventListener("click", (e) => {
+      openBtn?.addEventListener("click", (e) => {
         e.preventDefault();
-        e.stopPropagation();
-        if (drawer.classList.contains("hidden")) {
-          openDrawer();
-        } else {
-          closeDrawer();
-        }
+        if (!drawer) return;
+        const hidden = drawer.style.display === "none" || drawer.style.display === "";
+        hidden ? open() : close();
       });
 
-      closeBtn.addEventListener("click", (e) => {
+      closeBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        closeDrawer();
+        close();
       });
 
-      // Close drawer on overlay click
-      const overlay = document.getElementById('sidebar-overlay');
-      if (overlay) {
-        overlay.addEventListener('click', () => {
-          if (!drawer.classList.contains('hidden')) {
-            closeDrawer();
-          }
-        });
-      }
-    }
+      drawerOverlay?.addEventListener("click", close);
 
-    // Interactive Pagination script
-    let currentPage = 1;
-    const itemsPerPage = 7;
-    const rows = document.querySelectorAll(".drone-row");
-    const totalItems = rows.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+      // ── Pagination ──
+      const rows = document.querySelectorAll(".drone-row");
+      const totalItems = rows.length;
+      const totalPages = Math.ceil(totalItems / 7);
 
-    const prevBtn = document.getElementById(
-      "prev-page-btn",
-    ) as HTMLButtonElement | null;
-    const nextBtn = document.getElementById(
-      "next-page-btn",
-    ) as HTMLButtonElement | null;
-    const rangeStart = document.getElementById("range-start");
-    const rangeEnd = document.getElementById("range-end");
+      const prevBtn = document.getElementById("prev-page-btn") as HTMLButtonElement | null;
+      const nextBtn = document.getElementById("next-page-btn") as HTMLButtonElement | null;
+      const rangeStart = document.getElementById("range-start");
+      const rangeEnd = document.getElementById("range-end");
 
-    function updatePagination() {
-      if (!prevBtn || !nextBtn || !rangeStart || !rangeEnd) return;
+      let currentPage = 1;
 
-      // Enable/Disable buttons
-      prevBtn.disabled = currentPage === 1;
-      nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+      const updatePagination = () => {
+        if (!prevBtn || !nextBtn) return;
+        if (!rangeStart || !rangeEnd) return;
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages || totalPages === 0;
 
-      // Update indicators
-      const startIdx = (currentPage - 1) * itemsPerPage;
-      const endIdx = Math.min(startIdx + itemsPerPage, totalItems);
+        const startIdx = (currentPage - 1) * 7;
+        const endIdx = Math.min(startIdx + 7, totalItems);
 
-      rangeStart.textContent =
-        totalItems === 0 ? "0" : (startIdx + 1).toString();
-      rangeEnd.textContent = endIdx.toString();
+        rangeStart.textContent = totalItems === 0 ? "0" : String(startIdx + 1);
+        rangeEnd.textContent = String(endIdx);
 
-      // Toggle rows visibility
-      rows.forEach((row) => {
-        const idxAttr = row.getAttribute("data-index");
-        if (idxAttr !== null) {
+        rows.forEach((row) => {
+          const idxAttr = row.getAttribute("data-index");
+          if (idxAttr === null) return;
           const idx = parseInt(idxAttr, 10);
-          if (idx >= startIdx && idx < endIdx) {
-            row.classList.remove("hidden");
-          } else {
-            row.classList.add("hidden");
-          }
-        }
-      });
-    }
+          row.classList.toggle("hidden", idx < startIdx || idx >= endIdx);
+        });
+      };
 
-    if (prevBtn && nextBtn) {
-      prevBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (currentPage > 1) {
-          currentPage--;
-          updatePagination();
-        }
-      });
+      if (prevBtn && nextBtn) {
+        prevBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (currentPage > 1) { currentPage--; updatePagination(); }
+        });
 
-      nextBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (currentPage < totalPages) {
-          currentPage++;
-          updatePagination();
-        }
-      });
+        nextBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (currentPage < totalPages) { currentPage++; updatePagination(); }
+        });
 
-      // Run initial configuration load
-      updatePagination();
-    }
+        updatePagination();
+      }
 
-    // Toggle Tab logs interaction script
+      // ── Tab Toggle ──
     const successTabBtn = document.getElementById("success-tab-btn");
     const failedTabBtn = document.getElementById("failed-tab-btn");
     const successLogs = document.getElementById("success-logs-container");
     const failedLogs = document.getElementById("failed-logs-container");
 
-    if (successTabBtn && failedTabBtn && successLogs && failedLogs) {
+      if (!successTabBtn || !failedTabBtn || !successLogs || !failedLogs) return;
+
+      const ACTIVE = ["border-blue-500", "text-white", "font-bold"];
+      const INACTIVE = ["border-transparent", "text-slate-500", "font-medium"];
+
+      const activateTab = (active, inactive) => {
+        active.classList.add(...ACTIVE);
+        active.classList.remove(...INACTIVE);
+        inactive.classList.remove(...ACTIVE);
+        inactive.classList.add(...INACTIVE);
+      };
+
       successTabBtn.addEventListener("click", () => {
-        // Toggle Active styles on header tab button
-        successTabBtn.classList.add(
-          "border-blue-500",
-          "text-white",
-          "font-bold",
-        );
-        successTabBtn.classList.remove(
-          "border-transparent",
-          "text-slate-500",
-          "font-medium",
-        );
-
-        failedTabBtn.classList.remove(
-          "border-blue-500",
-          "text-white",
-          "font-bold",
-        );
-        failedTabBtn.classList.add(
-          "border-transparent",
-          "text-slate-500",
-          "font-medium",
-        );
-
-        // Toggle logs display lists
+        activateTab(successTabBtn, failedTabBtn);
         successLogs.classList.remove("hidden");
         failedLogs.classList.add("hidden");
       });
 
       failedTabBtn.addEventListener("click", () => {
-        // Toggle Active styles on header tab button
-        failedTabBtn.classList.add(
-          "border-blue-500",
-          "text-white",
-          "font-bold",
-        );
-        failedTabBtn.classList.remove(
-          "border-transparent",
-          "text-slate-500",
-          "font-medium",
-        );
-
-        successTabBtn.classList.remove(
-          "border-blue-500",
-          "text-white",
-          "font-bold",
-        );
-        successTabBtn.classList.add(
-          "border-transparent",
-          "text-slate-500",
-          "font-medium",
-        );
-
-        // Toggle logs display lists
+        activateTab(failedTabBtn, successTabBtn);
         failedLogs.classList.remove("hidden");
         successLogs.classList.add("hidden");
       });
-    }
+      // ── Drone Row Click → Drone Details Drawer ──
+      const droneDetailDrawer = document.getElementById("drone-detail-drawer");
+
+      document.querySelectorAll(".drone-row").forEach(row => {
+        row.addEventListener("click", () => {
+          // Highlight selected row
+          document.querySelectorAll(".drone-row").forEach(r => {
+            r.classList.remove("bg-blue-950/30", "border-l-2", "border-blue-500");
+          });
+          row.classList.add("bg-blue-950/30", "border-l-2", "border-blue-500");
+
+          const get = (attr) => row.getAttribute(attr) || "";
+          const id = get("data-id");
+          const location = get("data-location");
+          const status = get("data-status");
+          const attempts = get("data-attempts");
+          const success = get("data-success");
+          const pct = Number(get("data-pct"));
+          const pctColor = pct >= 95 ? "#10b981" : pct >= 90 ? "#60a5fa" : "#f59e0b";
+
+          // Populate detail fields
+          const el = (sel) => document.querySelector(`#drone-detail-drawer ${sel}`);
+          const set = (sel, val) => { const e = el(sel); if (e) e.textContent = val; };
+          set("#drone-detail-id", id);
+          set("#drone-detail-location", location);
+          set("#drone-detail-status", status);
+          set("#drone-detail-attempts", attempts);
+          set("#drone-detail-success", success);
+          set("#drone-detail-pct", `${pct}%`);
+          set("#drone-detail-ratio", `${success} of ${attempts} attempts successful`);
+
+          const pctLabel = el("#drone-detail-pct-bar-label");
+          if (pctLabel) { pctLabel.textContent = `${pct}%`; pctLabel.style.color = pctColor; }
+
+          const pctBar = el("#drone-detail-pct-bar");
+          if (pctBar) { pctBar.style.width = `${pct}%`; pctBar.style.background = pctColor; }
+
+          // Status badge
+          const badge = el("#drone-detail-status-badge");
+          if (badge) {
+            badge.textContent = status;
+            badge.className = "inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-[11px] font-bold uppercase tracking-wider border";
+            const colors = status === "IN-TRANSIT" ? ["bg-blue-500/10", "border-blue-500/20", "text-blue-400"]
+              : status === "MAINTENANCE" ? ["bg-rose-500/10", "border-rose-500/20", "text-rose-400"]
+              : ["bg-slate-500/10", "border-slate-500/25", "text-slate-400"];
+            badge.classList.add(...colors);
+          }
+
+          // Open the drone detail drawer
+          if (droneDetailDrawer) droneDetailDrawer.style.display = "flex";
+        });
+      });
+
+    })();
   </script>
 </Layout>

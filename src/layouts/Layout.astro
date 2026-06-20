@@ -33,59 +33,46 @@ const { title = "Pluto Fleet Command" } = Astro.props;
     <slot />
     <!-- Mobile sidebar toggle script -->
     <script>
-      function initMobileSidebar() {
-        const overlay = document.getElementById('sidebar-overlay');
-        const sidebar = document.querySelector('.mobile-sidebar');
-        const toggleBtn = document.getElementById('mobile-menu-toggle');
+      (() => {
+        const init = () => {
+          const overlay = document.getElementById('sidebar-overlay');
+          const sidebar = document.querySelector('.mobile-sidebar');
+          const toggleBtn = document.getElementById('mobile-menu-toggle');
 
-        if (!overlay || !sidebar || !toggleBtn) return;
+          if (!overlay || !sidebar || !toggleBtn) return;
 
-        function openSidebar() {
-          sidebar.classList.remove('hidden');
-          overlay.classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
-        }
+          const open = () => {
+            sidebar.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          };
 
-        function closeSidebar() {
-          sidebar.classList.add('hidden');
-          overlay.classList.add('hidden');
-          document.body.style.overflow = '';
-        }
+          const close = () => {
+            sidebar.classList.add('hidden');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+          };
 
-        toggleBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (sidebar.classList.contains('hidden')) {
-            openSidebar();
-          } else {
-            closeSidebar();
-          }
-        });
-
-        // Also wire up close buttons inside the sidebar
-        const closeBtns = sidebar.querySelectorAll('#mobile-menu-close, #mobile-menu-close-bottom');
-        closeBtns.forEach(btn => {
-          btn.addEventListener('click', (e) => {
+          toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            closeSidebar();
+            sidebar.classList.contains('hidden') ? open() : close();
           });
-        });
 
-        overlay.addEventListener('click', closeSidebar);
+          sidebar.querySelectorAll('#mobile-menu-close, #mobile-menu-close-bottom').forEach(btn => {
+            btn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
+          });
 
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && !sidebar.classList.contains('hidden')) {
-            closeSidebar();
-          }
-        });
-      }
+          overlay.addEventListener('click', close);
 
-      // Run on DOM ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initMobileSidebar);
-      } else {
-        initMobileSidebar();
-      }
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !sidebar.classList.contains('hidden')) close();
+          });
+        };
+
+        document.readyState === 'loading'
+          ? document.addEventListener('DOMContentLoaded', init)
+          : init();
+      })();
     </script>
   </body>
 </html>

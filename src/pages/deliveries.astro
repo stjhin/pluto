@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import SearchBar from '../components/SearchBar.astro';
+import Drawer from '../components/Drawer.astro';
+import PageTitle from '../components/PageTitle.astro';
+import HeaderUtilityIcons from '../components/HeaderUtilityIcons.astro';
 import { 
-  Rocket, 
-  Package, 
-  TrendingUp, 
-  Settings, 
+  Package,
   Search, 
   HelpCircle, 
   Sparkles, 
@@ -15,8 +17,6 @@ import {
   ChevronDown,
   Download,
   Terminal as TerminalIcon,
-  Bell,
-  User,
   Activity,
   Plus,
   ShieldAlert,
@@ -61,60 +61,7 @@ const metrics = {
 
 <Layout title="PLUTO Fleet Command | Deliveries">
   <div class="flex h-screen overflow-hidden bg-[#0a0d16] relative">
-
-    <!-- LEFT SIDEBAR -->
-    <aside class="mobile-sidebar hidden lg:flex w-64 bg-[#0e1220] border-r border-[#192239] flex-col justify-between shrink-0 fixed lg:relative inset-y-0 left-0 z-40 shadow-2xl lg:shadow-none">
-      <div>
-        <!-- Brand / Identity -->
-        <div class="p-6 border-b border-[#192239]">
-          <div class="flex items-center gap-2.5 justify-between">
-            <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20">
-              P
-            </div>
-            <div>
-              <h1 class="text-xs uppercase font-extrabold tracking-widest text-blue-400">Pluto</h1>
-              <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Fleet Command</p>
-            </div>
-            <button id="mobile-menu-close" class="lg:hidden p-1 text-slate-400 hover:text-white -mr-1" aria-label="Close menu"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Navigation Links -->
-        <nav class="p-4 space-y-1">
-          <a href="/pluto/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
-            <Rocket class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400" />
-            Drones
-          </a>
-          <a href="/pluto/deliveries" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-300 bg-[#171f34] border-l-2 border-blue-500 rounded-r-md transition-all">
-            <Package class="w-[18px] h-[18px] text-blue-400" />
-            Deliveries
-          </a>
-          <a href="/pluto/analytics" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
-            <TrendingUp class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400" />
-            Analytics
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-[#12192a]/50 rounded-md transition-all group">
-            <Settings class="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-400" />
-            Settings
-          </a>
-        </nav>
-      </div>
-
-      <!-- User Profile (Bottom of Sidebar) -->
-      <div class="p-4 border-t border-[#192239] bg-[#0c0f1b]">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-[#11182c] border border-blue-500/20 text-blue-400 flex items-center justify-center font-bold shadow-inner">
-            JB
-          </div>
-          <div class="overflow-hidden">
-            <p class="text-xs font-semibold text-slate-200 truncate">Justin Beckenbaur</p>
-            <p class="text-[10px] text-slate-500 uppercase tracking-tight">System Admin</p>
-          </div>
-        </div>
-      </div>
-    </aside>
+    <Navigation activePage="deliveries" />
 
     <!-- MAIN BODY SECTION & RIGHT LOGS -->
     <div class="flex flex-1 overflow-hidden">
@@ -126,37 +73,23 @@ const metrics = {
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
           <!-- Mobile Hamburger -->
           <button id="mobile-menu-toggle" class="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-[#171f34] transition-colors shrink-0 mb-1" aria-label="Open menu"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-          <!-- Navigation Title -->
-          <div class="relative w-full lg:w-80">
-            <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input 
-              type="text" 
-              placeholder="Search Deliveries..." 
-              class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2 pl-10 pr-4 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
-            />
+          <div class="w-full lg:w-80">
+            <SearchBar placeholder="Search deliveries..." />
           </div>
 
-          <!-- Utility Icons with Badges -->
-          <div class="flex items-center gap-4 text-slate-400">
-            <button class="relative p-1.5 hover:text-slate-200 transition-colors">
-              <span class="absolute top-1 right-1 w-2 h-2 bg-[#ef4444] rounded-full"></span>
-              <Bell class="w-4 h-4" />
-            </button>
-            <button class="p-1.5 hover:text-slate-200 transition-colors">
-              <HelpCircle class="w-4 h-4" />
-            </button>
-            <button class="p-1.5 hover:text-slate-200 transition-colors border border-[#192239] rounded-full bg-[#0e1220]">
-              <User class="w-4 h-4 text-slate-300" />
-            </button>
-          </div>
+          <HeaderUtilityIcons />
         </div>
+
+        <PageTitle description="Live tracking, status monitoring, and delivery dispatch management across the fleet.">
+          <Package class="w-6 h-6 text-blue-400" /> Deliveries
+        </PageTitle>
 
         <!-- Metric Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
           <!-- Active Deliveries -->
           <div class="bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 relative">
             <div class="flex justify-between items-start mb-2">
-              <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Active Deliveries</p>
+              <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Active Deliveries</p>
             </div>
             <div class="flex items-baseline gap-3">
               <h3 class="text-3xl font-extrabold text-white tracking-tight">{metrics.activeDeliveries}</h3>
@@ -171,7 +104,7 @@ const metrics = {
           <!-- Avg Delivery Time -->
           <div class="bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 relative">
             <div class="flex justify-between items-start mb-2">
-              <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Avg Delivery Time</p>
+              <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Avg Delivery Time</p>
             </div>
             <div class="flex items-baseline gap-3">
               <h3 class="text-3xl font-extrabold text-white tracking-tight">{metrics.avgDeliveryTime}</h3>
@@ -186,11 +119,11 @@ const metrics = {
           <!-- Successful Today -->
           <div class="bg-gradient-to-b from-[#111727] to-[#0e1321] border border-[#1d263f] rounded-xl p-6 relative">
             <div class="flex justify-between items-start mb-2">
-              <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Successful Today (%)</p>
+              <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Successful Today (%)</p>
             </div>
             <div class="flex items-baseline gap-3">
               <h3 class="text-3xl font-extrabold text-white tracking-tight">{metrics.successRate}</h3>
-              <span class="text-xs font-bold text-[#10b981] uppercase tracking-wide text-[10px]">{metrics.rateStatus}</span>
+              <span class="text-xs font-bold text-[#10b981] uppercase tracking-wide text-[11px]">{metrics.rateStatus}</span>
             </div>
             <!-- Progress Line -->
             <div class="mt-4 w-full h-1 bg-[#172033] rounded-full overflow-hidden">
@@ -229,12 +162,12 @@ const metrics = {
             <table class="w-full text-left border-collapse" id="deliveries-table">
               <thead>
                 <tr class="border-b border-[#172036] bg-[#0c101d]/60">
-                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Delivery ID</th>
-                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Address</th>
-                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Drone</th>
-                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Status</th>
-                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">ETA</th>
-                  <th class="py-3 px-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase text-center">Action</th>
+                  <th class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">Delivery ID</th>
+                  <th class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">Address</th>
+                  <th class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">Drone</th>
+                  <th class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">Status</th>
+                  <th class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">ETA</th>
+                  <th class="py-3 px-5 text-[11px] font-bold tracking-wider text-slate-400 uppercase text-center">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-[#151b2e]">
@@ -253,7 +186,7 @@ const metrics = {
                     </td>
                     <td class="py-4 px-5 text-xs">
                       <p class="font-bold text-slate-200">{delivery.address}</p>
-                      <p class="text-[10px] text-slate-500 font-medium">{delivery.addressDetail}</p>
+                      <p class="text-[11px] text-slate-500 font-medium">{delivery.addressDetail}</p>
                     </td>
                     <td class="py-4 px-5 text-xs font-mono text-slate-300">
                       <div class="flex items-center gap-1.5">
@@ -267,32 +200,32 @@ const metrics = {
                     </td>
                     <td class="py-4 px-5">
                       {delivery.status === "IN TRANSIT" && (
-                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-blue-500/10 border border-blue-500/20 rounded-md text-[9px] font-bold text-blue-400 uppercase tracking-wider">
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-blue-500/10 border border-blue-500/20 rounded-md text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                           In Transit
                         </div>
                       )}
                       {delivery.status === "DELAYED" && (
-                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-rose-500/10 border border-rose-500/20 rounded-md text-[9px] font-bold text-rose-400 tracking-wider">
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-rose-500/10 border border-rose-500/20 rounded-md text-[10px] font-bold text-rose-400 tracking-wider">
                           Delayed
                         </div>
                       )}
                       {delivery.status === "SCHEDULED" && (
-                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-slate-500/10 border border-slate-500/25 rounded-md text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-slate-500/10 border border-slate-500/25 rounded-md text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           Scheduled
                         </div>
                       )}
                       {delivery.status === "FINAL APPROACH" && (
-                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[9px] font-bold text-emerald-400 uppercase tracking-wilder">
+                        <div class="inline-flex items-center gap-1.5 py-0.5 px-2 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[10px] font-bold text-emerald-400 uppercase tracking-wilder">
                           Final Approach
                         </div>
                       )}
                     </td>
                     <td class="py-4 px-5 text-xs">
                       <p class="font-mono font-bold text-slate-200">{delivery.eta}</p>
-                      <p class={`text-[10px] font-bold ${
+                      <p class={`text-[11px] font-bold ${
                         delivery.type === 'delayed' ? 'text-rose-400' :
-                        delivery.type === 'approach' ? 'text-emerald-400 text-[10px]' :
-                        delivery.type === 'transit' ? 'text-emerald-400 text-[10px]' : 'text-slate-500'
+                        delivery.type === 'approach' ? 'text-emerald-400 text-[11px]' :
+                        delivery.type === 'transit' ? 'text-emerald-400 text-[11px]' : 'text-slate-500'
                       }`}>{delivery.etaDetail}</p>
                     </td>
                     <td class="py-4 px-5 text-center">
@@ -343,102 +276,87 @@ const metrics = {
 
       </main>
 
-      <!-- RIGHT SIDEBAR (Tactical Airspace Map) -->
-      <aside id="tactical-sidebar" class="w-80 lg:w-96 bg-[#0e1220] flex-col shrink-0 border-l border-[#192239] hidden transition-all duration-300 fixed lg:relative right-0 inset-y-0 z-50 shadow-2xl lg:shadow-none">
-        <!-- Tabbed Header -->
-        <div class="p-6 border-b border-[#192239] flex justify-between items-center bg-[#0d101e]">
-          <div>
-            <h3 class="text-xs font-extrabold text-white tracking-widest uppercase">Tactical Airspace</h3>
-            <p class="text-[9px] text-blue-400 font-bold font-mono mt-0.5 tracking-wider" id="active-drone-lbl">DRONE: UNKNOWN</p>
+      <Drawer id="tactical-sidebar" title="Tactical Airspace">
+        <div class="flex items-center gap-3 -mt-1 mb-2">
+          <p class="text-[10px] text-blue-400 font-bold font-mono tracking-wider" id="active-drone-lbl">DRONE: UNKNOWN</p>
+          <span class="flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-emerald-400 uppercase">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+            Live Feed
+          </span>
+        </div>
+
+        <!-- Tactical Vector Radar Deco Container -->
+        <div class="relative bg-[#0b0e1a] border border-[#1b253b] rounded-xl overflow-hidden shadow-inner flex flex-col justify-between aspect-[1.12/1] min-h-[300px] p-4 group">
+
+          <!-- Google Maps Embed Container -->
+          <div id="map-iframe-container" class="absolute inset-0 w-full h-full z-0 pointer-events-auto">
+            <!-- Dynamically populated iframe -->
           </div>
-          <div class="flex items-center gap-3">
-            <span class="flex items-center gap-1.5 text-[9px] font-bold tracking-wider text-emerald-400 uppercase">
-              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-              Live Feed
-            </span>
-            <button id="close-sidebar-btn" class="p-1 hover:bg-[#1c2642] rounded-md text-slate-400 hover:text-white transition-all cursor-pointer">
-              <X class="w-4 h-4" />
-            </button>
+
+          <!-- Dynamic UI Overlay for high tech vibe -->
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0b0e1a] via-transparent to-transparent pointer-events-none z-10 h-1/2 mt-auto"></div>
+
+          <!-- Radar border highlight -->
+          <div class="absolute inset-x-0 bottom-0 top-1/2 bg-[#0b101c]/90 pointer-events-none z-10 flex flex-col justify-end p-4 border-t border-blue-500/10">
+            <!-- Radar details bubble -->
+            <div class="relative z-20 p-3 bg-[#0e1324]/95 border border-blue-500/20 rounded-lg flex justify-between items-center backdrop-blur-sm shadow-lg">
+              <div class="flex items-center gap-2">
+                <Crosshair class="w-4 h-4 text-blue-400 animate-spin" style="animation-duration: 10s" />
+                <div class="min-w-0">
+                  <p id="active-id-lbl" class="font-mono text-[10px] font-bold text-white uppercase tracking-wider">#DLV-0000</p>
+                  <p id="active-address-lbl" class="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[140px]">Sector Loading...</p>
+                </div>
+              </div>
+              <div class="text-right font-mono text-[10px] font-bold text-blue-400">
+                <p id="active-eta-lbl">ETA --:--</p>
+                <p id="active-status-lbl" class="text-emerald-400 text-[10px]">ACTIVE</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="p-6 flex-1 flex flex-col justify-between overflow-y-auto space-y-6">
+        <!-- Bottom: Recent Logistics Events -->
+        <div class="space-y-4 pt-4 border-t border-[#192239]">
+          <h4 class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Recent Logistics Events</h4>
+          <div class="space-y-3.5">
 
-          <!-- Tactical Vector Radar Deco Container -->
-          <div class="relative bg-[#0b0e1a] border border-[#1b253b] rounded-xl overflow-hidden shadow-inner flex flex-col justify-between aspect-[1.12/1] min-h-[300px] p-4 group">
-
-            <!-- Google Maps Embed Container -->
-            <div id="map-iframe-container" class="absolute inset-0 w-full h-full z-0 pointer-events-auto">
-              <!-- Dynamically populated iframe -->
-            </div>
-
-            <!-- Dynamic UI Overlay for high tech vibe -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0b0e1a] via-transparent to-transparent pointer-events-none z-10 h-1/2 mt-auto"></div>
-
-            <!-- Radar border highlight -->
-            <div class="absolute inset-x-0 bottom-0 top-1/2 bg-[#0b101c]/90 pointer-events-none z-10 flex flex-col justify-end p-4 border-t border-blue-500/10">
-              <!-- Radar details bubble -->
-              <div class="relative z-20 p-3 bg-[#0e1324]/95 border border-blue-500/20 rounded-lg flex justify-between items-center backdrop-blur-sm shadow-lg">
-                <div class="flex items-center gap-2">
-                  <Crosshair class="w-4 h-4 text-blue-400 animate-spin" style="animation-duration: 10s" />
-                  <div class="min-w-0">
-                    <p id="active-id-lbl" class="font-mono text-[9px] font-bold text-white uppercase tracking-wider">#DLV-0000</p>
-                    <p id="active-address-lbl" class="text-[8px] text-slate-400 font-bold uppercase truncate max-w-[140px]">Sector Loading...</p>
-                  </div>
-                </div>
-                <div class="text-right font-mono text-[8px] font-bold text-blue-400">
-                  <p id="active-eta-lbl">ETA --:--</p>
-                  <p id="active-status-lbl" class="text-emerald-400 text-[8px]">ACTIVE</p>
-                </div>
+            <!-- Event 1 -->
+            <div class="flex gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0 animate-pulse"></span>
+              <div class="text-xs">
+                <p class="font-bold text-slate-300">#DLV-8822 Delivered Successfully</p>
+                <p class="text-[11px] text-slate-500 font-medium">2 mins ago • Sector 3</p>
               </div>
             </div>
+
+            <!-- Event 2 -->
+            <div class="flex gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 shrink-0"></span>
+              <div class="text-xs">
+                <p class="font-bold text-slate-300">Weather Alert: High Winds</p>
+                <p class="text-[11px] text-slate-500 font-medium">10 mins ago • Sector 7-9</p>
+              </div>
+            </div>
+
+            <!-- Event 3 -->
+            <div class="flex gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0"></span>
+              <div class="text-xs">
+                <p class="font-bold text-slate-300">DR-X1-44 Battery Normal</p>
+                <p class="text-[11px] text-slate-500 font-medium">15 mins ago • In Transit</p>
+              </div>
+            </div>
+
           </div>
-
-          <!-- Bottom: Recent Logistics Events -->
-          <div class="space-y-4 pt-4 border-t border-[#192239]">
-            <h4 class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Recent Logistics Events</h4>
-            <div class="space-y-3.5">
-
-              <!-- Event 1 -->
-              <div class="flex gap-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0 animate-pulse"></span>
-                <div class="text-xs">
-                  <p class="font-bold text-slate-300">#DLV-8822 Delivered Successfully</p>
-                  <p class="text-[10px] text-slate-500 font-medium">2 mins ago • Sector 3</p>
-                </div>
-              </div>
-
-              <!-- Event 2 -->
-              <div class="flex gap-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 shrink-0"></span>
-                <div class="text-xs">
-                  <p class="font-bold text-slate-300">Weather Alert: High Winds</p>
-                  <p class="text-[10px] text-slate-500 font-medium">10 mins ago • Sector 7-9</p>
-                </div>
-              </div>
-
-              <!-- Event 3 -->
-              <div class="flex gap-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0"></span>
-                <div class="text-xs">
-                  <p class="font-bold text-slate-300">DR-X1-44 Battery Normal</p>
-                  <p class="text-[10px] text-slate-500 font-medium">15 mins ago • In Transit</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
         </div>
 
         <!-- Float map target control -->
-        <div class="p-6 border-t border-[#192239] bg-[#0c0f1b] flex items-center justify-end">
+        <div class="pt-4 flex items-center justify-end">
           <button id="focus-location-btn" class="w-11 h-11 bg-blue-600 hover:bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-500/20 transition-all cursor-pointer">
             <Crosshair class="w-5 h-5" />
           </button>
         </div>
-
-      </aside>
+      </Drawer>
 
     </div>
 
@@ -452,7 +370,7 @@ const metrics = {
       <div class="flex justify-between items-center pb-4 border-b border-[#192239]">
         <div>
           <h3 class="text-sm font-extrabold text-white tracking-widest uppercase">Launch New Mission</h3>
-          <p class="text-[10px] text-slate-500 font-semibold uppercase mt-0.5 tracking-wider">Configure flight and delivery parameters</p>
+          <p class="text-[11px] text-slate-500 font-semibold uppercase mt-0.5 tracking-wider">Configure flight and delivery parameters</p>
         </div>
         <button id="close-modal-trigger" class="p-1.5 hover:bg-[#1a233b] rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer">
           <X class="w-4 h-4" />
@@ -464,7 +382,7 @@ const metrics = {
 
         <!-- Field 1: Select Idle Zone Dropdown -->
         <div class="space-y-1.5">
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Idle Zone / Station</label>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Select Idle Zone / Station</label>
           <div class="relative">
             <select 
               id="mission-idle-zone" 
@@ -490,8 +408,8 @@ const metrics = {
         <!-- Field 2: Target Location (Typing with autocomplete & saved locations selection) -->
         <div class="space-y-1.5 relative">
           <div class="flex justify-between items-center">
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Delivery Coordinates / Address</label>
-            <span class="text-[9px] text-blue-400 font-bold hover:underline cursor-pointer uppercase tracking-wider" id="use-saved-address-trigger">
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Delivery Coordinates / Address</label>
+            <span class="text-[10px] text-blue-400 font-bold hover:underline cursor-pointer uppercase tracking-wider" id="use-saved-address-trigger">
               Use Saved Address
             </span>
           </div>
@@ -510,7 +428,7 @@ const metrics = {
 
           <!-- Dynamic Auto-suggestions listing -->
           <div id="autocomplete-suggestions" class="absolute left-0 right-0 top-full mt-1.5 bg-[#0e1220] border border-[#1b253b] rounded-lg shadow-xl overflow-hidden hidden z-50">
-            <div class="p-2 border-b border-[#1b253b] bg-[#0b0e1a] text-[10px] text-slate-500 font-bold tracking-wider uppercase flex justify-between items-center">
+            <div class="p-2 border-b border-[#1b253b] bg-[#0b0e1a] text-[11px] text-slate-500 font-bold tracking-wider uppercase flex justify-between items-center">
               <span>Google Maps Live Preview Matches</span>
               <span class="text-blue-500">Live API active</span>
             </div>
@@ -522,20 +440,20 @@ const metrics = {
           <!-- Saved Addresses dropdown selection block -->
           <div id="saved-addresses-selector" class="mt-2 p-3 bg-[#0a0d16] border border-[#1c2438] rounded-lg hidden">
             <div class="flex justify-between items-center mb-1.5">
-              <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Fast Saved Logistics Docks</span>
-              <button id="hide-saved-trigger" type="button" class="text-[9px] text-slate-500 hover:text-slate-300 font-bold">Close Drawer</button>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Fast Saved Logistics Docks</span>
+              <button id="hide-saved-trigger" type="button" class="text-[10px] text-slate-500 hover:text-slate-300 font-bold">Close Drawer</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="St. Jude General Hospital" data-detail="Landing Platform Green D-1">
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-xs font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="St. Jude General Hospital" data-detail="Landing Platform Green D-1">
                 St. Jude Hospital
               </button>
-              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Tech City Research Hub" data-detail="South Rooftop Quad B">
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-xs font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Tech City Research Hub" data-detail="South Rooftop Quad B">
                 Tech City Hub
               </button>
-              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Apex Logistics Terminal" data-detail="Bay Row 14 Loading Dock">
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-xs font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Apex Logistics Terminal" data-detail="Bay Row 14 Loading Dock">
                 Apex Terminal
               </button>
-              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-[11px] font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Green Crossing Sub-station" data-detail="Docking Stand 3 Rear">
+              <button type="button" class="p-2 border border-[#1c2438] hover:border-blue-500/30 bg-[#111625] text-left rounded text-xs font-medium text-slate-300 truncate hover:text-white transition-all saved-addr-btn" data-address="Green Crossing Sub-station" data-detail="Docking Stand 3 Rear">
                 Green Substation
               </button>
             </div>
@@ -545,7 +463,7 @@ const metrics = {
         <div class="grid grid-cols-2 gap-4">
           <!-- Field 3: Calendar Date Picker (1 Date) -->
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-sans">Launch Due Date</label>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest font-sans">Launch Due Date</label>
             <input 
               id="mission-due-date"
               type="date" 
@@ -557,8 +475,8 @@ const metrics = {
           <!-- Field 4: 24h Time Out matching system Timezone -->
           <div class="space-y-1.5">
             <div class="flex justify-between items-baseline">
-              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest text-[9px]">Time (24h)</label>
-              <span id="system-tz-lbl" class="text-[8px] font-bold text-blue-400/80 font-mono tracking-wider uppercase">UTC-5</span>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest text-[10px]">Time (24h)</label>
+              <span id="system-tz-lbl" class="text-[10px] font-bold text-blue-400/80 font-mono tracking-wider uppercase">UTC-5</span>
             </div>
             <select 
               id="mission-due-time" 
@@ -602,19 +520,19 @@ const metrics = {
 
       <!-- Detail Headers -->
       <h3 class="text-sm font-extrabold text-white tracking-widest uppercase mb-1">Flight Deployed</h3>
-      <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mb-5">Telemetry Connection Established</p>
+      <p class="text-[11px] text-slate-400 font-semibold tracking-wider uppercase mb-5">Telemetry Connection Established</p>
 
       <!-- Key Value Display Panel -->
       <div class="bg-[#0b0e1a] border border-[#1b253b] rounded-lg p-3.5 text-left mb-6 space-y-2">
-        <div class="flex justify-between items-center text-[10px] font-semibold border-b border-[#151c2e] pb-1.5">
+        <div class="flex justify-between items-center text-[11px] font-semibold border-b border-[#151c2e] pb-1.5">
           <span class="text-slate-500 uppercase">Mission ID</span>
           <span class="text-white font-mono font-bold text-xs text-blue-400" id="success-mission-id">--</span>
         </div>
-        <div class="flex justify-between items-center text-[10px] font-semibold border-b border-[#151c2e] pb-1.5">
+        <div class="flex justify-between items-center text-[11px] font-semibold border-b border-[#151c2e] pb-1.5">
           <span class="text-slate-500 uppercase">Station Dock</span>
           <span class="text-slate-200" id="success-mission-dock">--</span>
         </div>
-        <div class="flex justify-between text-[10px] font-semibold">
+        <div class="flex justify-between text-[11px] font-semibold">
           <span class="text-slate-500 uppercase shrink-0">Address</span>
           <span class="text-slate-200 text-right truncate max-w-[180px]" id="success-mission-address">--</span>
         </div>
@@ -642,14 +560,14 @@ const metrics = {
 
       <!-- Detail Headers -->
       <h3 class="text-sm font-extrabold text-white tracking-widest uppercase mb-1">Cancel Mission?</h3>
-      <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mb-3">Flight Abort & Recovery Authorization</p>
+      <p class="text-[11px] text-slate-400 font-semibold tracking-wider uppercase mb-3">Flight Abort & Recovery Authorization</p>
 
       <!-- Helper text displaying automatic return-to-base message -->
       <div class="p-3 bg-rose-500/5 border border-rose-500/10 rounded-lg mb-6">
-        <p class="text-[11px] text-rose-300 font-medium leading-relaxed">
+        <p class="text-xs text-rose-300 font-medium leading-relaxed">
           Are you sure you want to terminate mission <span id="cancel-mission-id" class="font-mono font-bold text-white">--</span>?
         </p>
-        <p class="text-[10px] text-slate-400 font-medium mt-1">
+        <p class="text-[11px] text-slate-400 font-medium mt-1">
           ⚠️ <strong>Flight Assist Safety Action:</strong> The drone <span id="cancel-drone-id" class="font-mono font-bold text-slate-200">--</span> will immediately abort current telemetry progress and return to designated base station.
         </p>
       </div>
@@ -676,8 +594,9 @@ const metrics = {
 
   <!-- Interactive script for Search, Filter & Tabs -->
   <script>
-    let currentPage = 1;
-    const itemsPerPage = 4;
+    (() => {
+      let currentPage = 1;
+      const ITEMS_PER_PAGE = 4;
     const rows = document.querySelectorAll('.delivery-row');
     let filteredRows = Array.from(rows);
 
@@ -691,7 +610,7 @@ const metrics = {
 
     function updateDeliveriesUI() {
       const totalItems = filteredRows.length;
-      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
       if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
 
@@ -724,8 +643,8 @@ const metrics = {
       rows.forEach(row => row.classList.add('hidden'));
 
       // Slicing Indexes
-      const startIdx = (currentPage - 1) * itemsPerPage;
-      const endIdx = Math.min(startIdx + itemsPerPage, totalItems);
+      const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
 
       if (rangeStart) rangeStart.textContent = totalItems === 0 ? "0" : (startIdx + 1).toString();
       if (rangeEnd) rangeEnd.textContent = endIdx.toString();
@@ -787,7 +706,7 @@ const metrics = {
 
     // Interactive Sidebar logic with dynamic Google Maps iframe binding
     const sidebar = document.getElementById('tactical-sidebar');
-    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+    const closeSidebarBtn = document.getElementById('tactical-sidebar-close');
     const activeDroneLbl = document.getElementById('active-drone-lbl');
     const activeIdLbl = document.getElementById('active-id-lbl');
     const activeAddressLbl = document.getElementById('active-address-lbl');
@@ -827,11 +746,11 @@ const metrics = {
         if (activeStatusLbl) {
           activeStatusLbl.textContent = status;
           if (status === 'DELAYED') {
-            activeStatusLbl.className = 'text-rose-400 text-[8px] font-bold';
+            activeStatusLbl.className = 'text-rose-400 text-[10px] font-bold';
           } else if (status === 'FINAL APPROACH') {
-            activeStatusLbl.className = 'text-emerald-400 text-[8px] font-bold';
+            activeStatusLbl.className = 'text-emerald-400 text-[10px] font-bold';
           } else {
-            activeStatusLbl.className = 'text-blue-400 text-[8px] font-bold';
+            activeStatusLbl.className = 'text-blue-400 text-[10px] font-bold';
           }
         }
 
@@ -853,7 +772,7 @@ const metrics = {
 
         // Slide side panel in elegantly if hidden
         if (sidebar) {
-          sidebar.classList.remove('hidden');
+          sidebar.style.display = "flex";
         }
       });
     });
@@ -861,7 +780,7 @@ const metrics = {
     if (closeSidebarBtn && sidebar) {
       closeSidebarBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        sidebar.classList.add('hidden');
+        sidebar.style.display = "none";
         // Clear selection background classes
         rows.forEach(r => r.classList.remove('bg-blue-950/30', 'border-l-2', 'border-blue-500'));
       });
@@ -1178,7 +1097,7 @@ const metrics = {
             // Find status badge and update to ABORTED/RETURNING
             const statusCell = rowEl.querySelector('td:nth-child(4) div');
             if (statusCell) {
-              statusCell.className = "inline-flex items-center gap-1.5 py-0.5 px-2 bg-yellow-500/10 border border-yellow-500/20 rounded-md text-[9px] font-bold text-yellow-400 uppercase tracking-wilder";
+              statusCell.className = "inline-flex items-center gap-1.5 py-0.5 px-2 bg-yellow-500/10 border border-yellow-500/20 rounded-md text-[10px] font-bold text-yellow-400 uppercase tracking-wilder";
               statusCell.textContent = "Aborted - RTB";
             }
           }
@@ -1188,5 +1107,6 @@ const metrics = {
 
     // Run initial UI configurations
     updateDeliveriesUI();
+    })();
   </script>
 </Layout>

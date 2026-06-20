@@ -1,0 +1,31 @@
+---
+// SearchBar.astro — shared search input for page headers
+// Props:
+//   placeholder - placeholder text (default: "Search all records — press Enter")
+//   id - unique element ID (default: "header-search-input")
+//   noRedirect - if true, skip Enter→/pluto/search redirect (default: false)
+const { placeholder = "Search all records — press Enter" } = Astro.props;
+const { id = "header-search-input" } = Astro.props;
+const { noRedirect = false } = Astro.props;
+---
+<input
+  id={id}
+  type="text"
+  placeholder={placeholder}
+  class="w-full bg-[#111625] border border-[#1b253b] rounded-lg py-2 pl-3 pr-4 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+  autocomplete="off"
+/>
+{!noRedirect && (
+<script define:vars={{ inputId: id }}>
+  (() => {
+    const si = document.getElementById(inputId);
+    if (!si) return;
+    si.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const q = si.value.trim();
+      if (q) window.location.href = `/pluto/search?q=${encodeURIComponent(q)}`;
+    });
+  })();
+</script>
+)}

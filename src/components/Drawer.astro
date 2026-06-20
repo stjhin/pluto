@@ -1,0 +1,23 @@
+---
+// Drawer.astro — reusable right-side panel
+// Props: id (required), title (default "Detail"), visible (default false)
+// When visible=true, drawer is hidden on mobile / flex on desktop (lg:flex)
+// When visible=false, drawer is fully hidden (needs JS to open)
+const { id } = Astro.props;
+const { title = "Detail" } = Astro.props;
+const { visible = false } = Astro.props;
+---
+<aside id={id} class={visible
+  ? "hidden lg:flex w-full md:w-80 lg:w-96 bg-[#0e1220] flex-col shrink-0 border-l border-[#192239] fixed inset-0 md:inset-y-0 md:right-0 md:left-auto z-50 shadow-2xl lg:shadow-none lg:relative"
+  : "hidden w-full md:w-80 lg:w-96 bg-[#0e1220] flex-col shrink-0 border-l border-[#192239] fixed inset-0 md:inset-y-0 md:right-0 md:left-auto z-50 shadow-2xl lg:shadow-none lg:relative"
+} style={visible ? "" : "display:none"}>
+  <div class="p-5 border-b border-[#192239] flex items-center justify-between shrink-0">
+    <h3 id={id + "-title"} class="text-sm font-extrabold text-white tracking-wide">{title}</h3>
+    <button id={id + "-close"} class="p-1.5 bg-[#171f34] text-slate-400 hover:text-white rounded transition-colors cursor-pointer" aria-label="Close drawer" onclick={`document.getElementById('` + id + `').style.display='none'`}>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id={id + "-body"} class="flex-1 overflow-y-auto p-5 space-y-4">
+    <slot />
+  </div>
+</aside>
